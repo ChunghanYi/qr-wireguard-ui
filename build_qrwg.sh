@@ -211,7 +211,7 @@ clean_env()
 	rm -rf $LIB_PATH > /dev/null 2>&1
 	mkdir -p $LIB_PATH > /dev/null 2>&1
 
-	rm -rf ./rootfs/qrwg/assets > /dev/null 2>&1
+	rm -rf ./rootfs/qrwg/qrwg/assets > /dev/null 2>&1
 	rm -rf ./rootfs/qrwg/usr/bin/qrwg > /dev/null 2>&1
 	mkdir -p ./rootfs/qrwg/usr/bin/qrwg > /dev/null 2>&1
 	rm -rf ./rootfs/qrwg/usr/local/lib > /dev/null 2>&1
