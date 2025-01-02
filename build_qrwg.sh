@@ -58,6 +58,7 @@ build_wireguard_ui()
 	if [ $1 = "release" ]; then
 		if [ ! -d ./node_modules ]; then
 			./prepare_assets.sh
+			go get github.com/ChunghanYi/qr-wireguard-ui/webui/beplugin
 		fi
 		GOOS=linux GOARCH=arm64 go build -o wireguard-ui	
 		cp ./wireguard-ui $INST_PKG_PATH/usr/bin/qrwg
