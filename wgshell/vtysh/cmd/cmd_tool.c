@@ -18,10 +18,10 @@
 #include <sys/ioctl.h>
 
 DEFUN(config_sh,
-		config_sh_cmd,
-		"end WORD",
-		"End a cli\n"
-		"End a cli\n")
+        config_sh_cmd,
+        "end WORD",
+        "End a cli\n"
+        "End a cli\n")
 {
 	if (strcmp(argv[0], "shell")) {
 		vty_out (vty, "%% Invalid magic value.%s", VTY_NEWLINE);
@@ -207,36 +207,36 @@ DEFUN(net_netstat_info,
 
 int cmd_tool_init()
 {
-    /* Each node's basic commands. */
-    cmd_install_element (VIEW_NODE, &config_ping_cmd);
-    cmd_install_element (VIEW_NODE, &config_ping_cmd_count);
+	/* Each node's basic commands. */
+	cmd_install_element (VIEW_NODE, &config_ping_cmd);
+	cmd_install_element (VIEW_NODE, &config_ping_cmd_count);
 	cmd_install_element (VIEW_NODE, &config_ssh_cmd);
 	cmd_install_element (VIEW_NODE, &config_ssh_port_cmd);
 
-    cmd_install_element (ENABLE_NODE, &config_ping_cmd);
-    cmd_install_element (ENABLE_NODE, &config_ping_cmd_count);
+	cmd_install_element (ENABLE_NODE, &config_ping_cmd);
+	cmd_install_element (ENABLE_NODE, &config_ping_cmd_count);
 	cmd_install_element (ENABLE_NODE, &config_ssh_cmd);
 	cmd_install_element (ENABLE_NODE, &config_ssh_port_cmd);
-    cmd_install_element (ENABLE_NODE, &config_tcpdump_cmd);
-    cmd_install_element (ENABLE_NODE, &net_netstat_info_cmd);
-    cmd_install_element (ENABLE_NODE, &config_sysinfo_cmd);
-    cmd_install_element (ENABLE_NODE, &show_date_cmd);
+	cmd_install_element (ENABLE_NODE, &config_tcpdump_cmd);
+	cmd_install_element (ENABLE_NODE, &net_netstat_info_cmd);
+	cmd_install_element (ENABLE_NODE, &config_sysinfo_cmd);
+	cmd_install_element (ENABLE_NODE, &show_date_cmd);
 
-    cmd_install_element (CONFIG_NODE, &config_ping_cmd);
-    cmd_install_element (CONFIG_NODE, &config_ping_cmd_count);
+	cmd_install_element (CONFIG_NODE, &config_ping_cmd);
+	cmd_install_element (CONFIG_NODE, &config_ping_cmd_count);
 
-    cmd_install_element (CONFIG_NODE, &config_reboot_cmd);
-    cmd_install_element (CONFIG_NODE, &config_poweroff_cmd);
+	cmd_install_element (CONFIG_NODE, &config_reboot_cmd);
+	cmd_install_element (CONFIG_NODE, &config_poweroff_cmd);
 
 	cmd_install_element (CONFIG_NODE, &config_ssh_cmd);
 	cmd_install_element (CONFIG_NODE, &config_ssh_port_cmd);
 
 #if 0
-    cmd_install_element (CONFIG_NODE, &config_date_cmd);
+	cmd_install_element (CONFIG_NODE, &config_date_cmd);
 #endif
 
-    cmd_install_element (CONFIG_NODE, &show_date_cmd);
+	cmd_install_element (CONFIG_NODE, &show_date_cmd);
 	cmd_install_element (CONFIG_NODE, &config_sh_cmd);
 
-    return 0;
+	return 0;
 }
