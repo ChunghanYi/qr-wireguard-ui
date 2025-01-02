@@ -61,26 +61,26 @@ func (t *TCPServer) send_message(c net.Conn, msg_cmd string, xmsg *model.Request
 
 	smsg.Cmd = fmt.Sprintf("cmd:=%s", msg_cmd)
 
-    enc := gob.NewEncoder(&network)
-    err := enc.Encode(smsg)
-    if err != nil {
-        log.Println("encoding error");
-        log.Println(err)
-        return
-    }
-    _, err = c.Write(network.Bytes())
-    if err != nil {
-        log.Println(err)
-    }
+	enc := gob.NewEncoder(&network)
+	err := enc.Encode(smsg)
+	if err != nil {
+		log.Println("encoding error");
+		log.Println(err)
+		return
+	}
+	_, err = c.Write(network.Bytes())
+	if err != nil {
+		log.Println(err)
+	}
 
 	switch (msg_cmd) {
 	case "OK":
 		log.Println("<<< OK message sent.")
 	case "NOK":
 		log.Println("<<< NOK message sent.")
-    default:
+	default:
 		log.Println("<<< UNKNOWN message sent.")
-    }
+	}
 }
 
 func (t *TCPServer) send_OK(c net.Conn, xmsg *model.RequestMessage) {
@@ -114,24 +114,24 @@ func (t *TCPServer) handleConnection(c net.Conn) {
 		temp := strings.Split(rmsg.Cmd, ":=")  //cmd:=HELLO\n
 		x := strings.TrimSuffix(temp[1], "\n")
 		switch (x) {
-			case "HELLO":
-				fmt.Printf(">>> cmd:=HELLO message received.\n")
-				flag := doAction(&rmsg)
-				if flag == true {
-					t.send_OK(c, &rmsg)
-				} else {
-					t.send_NOK(c, &rmsg)
-				}
-				return
-			case "BYE":
-				log.Println(">>> cmd:=BYE message received.")
+		case "HELLO":
+			fmt.Printf(">>> cmd:=HELLO message received.\n")
+			flag := doAction(&rmsg)
+			if flag == true {
 				t.send_OK(c, &rmsg)
-				return
-			default:
-				log.Println(">>> UNKNOWN message received.")
+			} else {
 				t.send_NOK(c, &rmsg)
-				return
-        }
+			}
+			return
+		case "BYE":
+			log.Println(">>> cmd:=BYE message received.")
+			t.send_OK(c, &rmsg)
+			return
+		default:
+			log.Println(">>> UNKNOWN message received.")
+			t.send_NOK(c, &rmsg)
+			return
+		}
 	}
 }
 

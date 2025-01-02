@@ -8,12 +8,12 @@
 package server
 
 import (
-    "fmt"
-    "strconv"
-    "strings"
-    "log"
-    "os"
-    "os/exec"
+	"fmt"
+	"strconv"
+	"strings"
+	"log"
+	"os"
+	"os/exec"
 
 	"web-agentd/model"
 )
@@ -51,7 +51,7 @@ func runCommand(fullcmd string) bool {
 
 func doAction(rmsg *model.RequestMessage) bool {
 	var KeyValue [16]string  //TDB
-    ok_flag := true
+	ok_flag := true
 
 	temp := strings.Split(rmsg.SubCmd, ":=")  //subcmd:=ADD_WIREGUARD_PEER\n
 	subcmd := strings.TrimSuffix(temp[1], "\n")
@@ -74,7 +74,7 @@ func doAction(rmsg *model.RequestMessage) bool {
 	}
 
 	var scmd string
-    switch subcmd {
+	switch subcmd {
 	case "SET_HOST_NAME":
 		scmd = fmt.Sprintf("hostname %s", KeyValue[0])
 		fmt.Printf(">>> scmd ---> [%s]\n", scmd)
