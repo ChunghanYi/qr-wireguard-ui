@@ -141,6 +141,7 @@ build_vtysh()
 
 		rm -rf ./ncurses-6.2 > /dev/null 2>&1
 		rm -rf ./readline-8.1 > /dev/null 2>&1 
+		rm ./*.tar.gz > /dev/null 2>&1
 
 		cd ../vtysh
 		make clean
