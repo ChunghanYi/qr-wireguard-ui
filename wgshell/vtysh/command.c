@@ -171,11 +171,7 @@ vector cmd_make_strvec_old (char *string)
 vector cmd_make_strvec(char *string)
 {
     char *cp, *start, *token, *tstart, *tend;
-#if 1 /* ORIG_CODE */
     int strlen;
-#else /* fortify fixed */
-    unsigned int strlen;
-#endif
     vector strvec;
     char *string2;
 
@@ -203,16 +199,12 @@ vector cmd_make_strvec(char *string)
 
     /* Return if there is only white spaces */
     if (*cp == '\0') {
-#if 1 /* fortify fixed - Memory Leak */
 		free(string2);
-#endif
         return NULL;
 	}
 
     if (*cp == '!' || *cp == '#') {
-#if 1 /* fortify fixed - Memory Leak */
 		free(string2);
-#endif
         return NULL;
 	}
 
@@ -499,9 +491,9 @@ static enum match_type cmd_ipv4_match (char *str)
         if (str - sp > 3)
             return no_match;
 
-#if 0 /* ORIG_CODE */
+#if 0
         strncpy (buf, sp, str - sp);
-#else /* fortify fixed */
+#else
 		if (str - sp >= 0)
 			memcpy(buf, sp, str - sp);
 		else
@@ -560,9 +552,9 @@ static enum match_type cmd_ipv4_prefix_match (char *str)
         if (str - sp > 3)
             return no_match;
 
-#if 0 /* ORIG_CODE */
+#if 0
         strncpy (buf, sp, str - sp);
-#else /* fortify fixed */
+#else
 		if (str - sp > 0)
 			memcpy (buf, sp, str - sp);
 		else
@@ -693,7 +685,7 @@ static enum match_type cmd_ipv6_match (char *str)
     return exact_match;
 }
 
-#if 0 /* ORIG_CODE - fortify fixed - Null Dereference */
+#if 0
 static enum match_type cmd_ipv6_prefix_match (char *str)
 {
     int state = STATE_START;
@@ -830,9 +822,9 @@ static int cmd_range_match (char *range, char *str)
         return 0;
     if (p - range > DECIMAL_STRLEN_MAX)
         return 0;
-#if 0 /* ORIG_CODE */
+#if 0
     strncpy (buf, range, p - range);
-#else /* fortify fixed */
+#else
     memcpy (buf, range, p - range);
 #endif
     buf[p - range] = '\0';
@@ -846,9 +838,9 @@ static int cmd_range_match (char *range, char *str)
         return 0;
     if (p - range > DECIMAL_STRLEN_MAX)
         return 0;
-#if 0 /* ORIG_CODE */
+#if 0
     strncpy (buf, range, p - range);
-#else /* fortify fixed */
+#else
 	int len = p - range;
 	if ((len <= DECIMAL_STRLEN_MAX) && (len >= 0))
 		memcpy (buf, range, len);
@@ -912,7 +904,7 @@ static enum match_type cmd_filter_by_completion (char *command, vector v, int in
                             matched++;
                         }
                     } else if (CMD_IPV6_PREFIX (str)) {
-#if 0 /* ORIG_CODE - fortify fixed - Null Dereference */
+#if 0
                         if (cmd_ipv6_prefix_match (command)) {
                             if (match_type < ipv6_prefix_match)
                                 match_type = ipv6_prefix_match;
@@ -1002,7 +994,7 @@ static enum match_type cmd_filter_by_string (char *command, vector v, int index)
                             matched++;
                         }
                     } else if (CMD_IPV6_PREFIX (str)) {
-#if 0 /* ORIG_CODE - fortify fixed - Null Dereference */
+#if 0
                         if (cmd_ipv6_prefix_match (command) == exact_match) {
                             if (match_type < ipv6_prefix_match)
                                 match_type = ipv6_prefix_match;
@@ -1092,7 +1084,7 @@ static int is_cmd_ambiguous (char *command, vector v, int index, enum match_type
                             match++;
                         break;
                     case ipv6_prefix_match:
-#if 0 /* ORIG_CODE - fortify fixed - Null Dereference */
+#if 0
                         if ((ret = cmd_ipv6_prefix_match (command)) != no_match) {
                             if (ret == partly_match)
                                 return 2; /* There is incomplete match. */
@@ -1169,7 +1161,7 @@ static char *cmd_entry_function_desc (char *src, char *dst)
             return NULL;
     }
 
-#if 0 /* ORIG_CODE - fortify fixed - Null Dereference */
+#if 0
     if (CMD_IPV6_PREFIX (dst)) {
         if (cmd_ipv6_prefix_match (src))
             return dst;
@@ -1285,16 +1277,12 @@ vector cmd_describe_command (vector vline, struct vty *vty, int *status)
         }
 
         if ((ret = is_cmd_ambiguous (command, cmd_vector, i, match)) == 1) {
-#if 1 /* fortify fixed */
 			vector_free (matchvec);
-#endif
             vector_free (cmd_vector);
             *status = CMD_ERR_AMBIGUOUS;
             return NULL;
         } else if (ret == 2) {
-#if 1 /* fortify fixed */
 			vector_free (matchvec);
-#endif
             vector_free (cmd_vector);
             *status = CMD_ERR_NO_MATCH;
             return NULL;
@@ -1343,14 +1331,14 @@ vector cmd_describe_command (vector vline, struct vty *vty, int *status)
         }
     vector_free (cmd_vector);
 
-#if 0 /* ORIG_CODE */
+#if 0
     if (vector_slot (matchvec, 0) == NULL) {
         vector_free (matchvec);
         *status= CMD_ERR_NO_MATCH;
     } else
         *status = CMD_SUCCESS;
     return matchvec;
-#else /* fortify fixed - Use After Free */
+#else
     if (vector_slot (matchvec, 0) == NULL) {
         vector_free (matchvec);
         *status= CMD_ERR_NO_MATCH;
@@ -1609,10 +1597,8 @@ int cmd_execute_command (vector vline, struct vty *vty, struct cmd_element **cmd
     varflag = 0;
     argc = 0;
 
-#if 1 /* fortify fixed - Null Dereference */
 	if (matched_element == NULL)
 		return CMD_ERR_NO_MATCH;
-#endif
 
     for (i = 0; i < vector_max (vline); i++) {
         if (varflag)
@@ -1722,10 +1708,8 @@ int cmd_execute_command_strict (vector vline, struct vty *vty, struct cmd_elemen
     varflag = 0;
     argc = 0;
 
-#if 1 /* fortify fixed - Null Dereference */ 
 	if (matched_element == NULL)
 		return CMD_ERR_NO_MATCH;
-#endif
 
     for (i = 0; i < vector_max (vline); i++) {
         if (varflag)
@@ -1833,7 +1817,7 @@ int cmd_execute_system_command (char *command, int argc, char **argv)
 
     if (pid < 0) {
         /* Failure of fork(). */
-#if 0 /* ORIG_CODE - fortify fixed: System Information Leak: Internal */
+#if 0
         fprintf (stderr, "Can't fork: %s\n", strerror (errno));
 #endif
 		close(dnull);
@@ -1877,7 +1861,7 @@ int cmd_execute_system_command (char *command, int argc, char **argv)
         }
 
         /* When execlp suceed, this part is not executed. */
-#if 0 /* ORIG_CODE - fortify fixed: System Information Leak: Internal */
+#if 0
         fprintf (stderr, "Can't execute %s: %s\n", command, strerror (errno));
 #endif
         exit (1);
@@ -2037,7 +2021,7 @@ void cmd_init (int terminal)
     cmd_install_node (&auth_enable_node, NULL);
     cmd_install_node (&config_node, NULL);
 
-#if 0 /* ORIG_CODE - fortify fixed - Insecure Randomness */
+#if 0
     srand(time(NULL));
 #endif
 }
