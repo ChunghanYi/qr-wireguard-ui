@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2024 Chunghan Yi <chunghan.yi@gmail.com>
+
+START=99
+STOP=10
+
+start() {
+	/usr/bin/qrwg/start_wg.sh
+}
+
+stop() {
+	/usr/bin/qrwg/stop_wg.sh
+}
