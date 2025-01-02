@@ -48,10 +48,10 @@ DEFUN (show_ip_config_name,
 
 DEFUN(show_ip_route, 
 	  show_ip_route_cmd,
-       "show ip route", 
-       SHOW_STR
-       IP_STR
-       "IP routing table\n")
+      "show ip route", 
+      SHOW_STR
+      IP_STR
+      "IP routing table\n")
 {
 	char *myargv[2];
 
@@ -60,20 +60,20 @@ DEFUN(show_ip_route,
 }
 
 DEFUN (ip_address, ip_address_cmd, 
-	"ip address ETHNAME A.B.C.D A.B.C.D", 
-	IP_STR
-	"config the ip address\n"
-	"interface name(lan|wan|wg0|wg1)\n"
-	"ip address e.g. x.x.x.x\n"
-	"ip netmask  e.g. 255.255.0.0\n")
+       "ip address ETHNAME A.B.C.D A.B.C.D", 
+       IP_STR
+       "config the ip address\n"
+       "interface name(lan|wan|wg0|wg1)\n"
+       "ip address e.g. x.x.x.x\n"
+       "ip netmask  e.g. 255.255.0.0\n")
 {
 	char *myargv[10];
 	char line[1024];
 
 	if (strcmp(argv[0], "lan") &&    /* LAN: br-lan(eth1) */
-		strcmp(argv[0], "wan") &&    /* WAN: eth0 */
-		strncmp(argv[0], "wg0", 3) &&
-		strncmp(argv[0], "wg1", 3)) {
+			strcmp(argv[0], "wan") &&    /* WAN: eth0 */
+			strncmp(argv[0], "wg0", 3) &&
+			strncmp(argv[0], "wg1", 3)) {
 		vty_out(vty, "%% Not supported interface(%s).\n", argv[0]);
 		return CMD_WARNING;
 	}
@@ -84,7 +84,7 @@ DEFUN (ip_address, ip_address_cmd,
 	config_add_line(config_top, line);
 
 	ENSURE_CONFIG(vty);
-	
+
 	if (!strcmp(argv[0], "lan")) {
 		/* Change the LAN configurations */
 		sprintf(line, "uci set network.lan.proto='static' > /dev/null 2>&1");  /* set: set or add */
@@ -116,9 +116,6 @@ DEFUN (ip_address, ip_address_cmd,
 		sprintf(line, "/etc/init.d/network restart > /dev/null 2>&1");
 		system(line);
 
-	} else if (!strcmp(argv[0], "wg0") || !strcmp(argv[0], "wg1")) {
-		/* TBD */
-
 	} else {
 		vty_out(vty, "%% Not supported interface(%s).\n", argv[0]);
 		return CMD_WARNING;
@@ -138,18 +135,18 @@ DEFUN (ip_address, ip_address_cmd,
 }
 
 DEFUN (no_ip_address, no_ip_address_cmd, 
-	"no ip address ETHNAME", 
-	NO_STR
-	IP_STR
-	"Disable the ip address\n"
-	"config the ip address\n"
-	"interface name(lan or wan)\n")
+       "no ip address ETHNAME", 
+       NO_STR
+       IP_STR
+       "Disable the ip address\n"
+       "config the ip address\n"
+       "interface name(lan or wan)\n")
 {
 	char *myargv[10];
 	char line[1024];
 
 	if (strcmp(argv[0], "lan") &&    /* LAN: br-lan(eth1) */
-		strcmp(argv[0], "wan")) {    /* WAN: eth0 */
+			strcmp(argv[0], "wan")) {    /* WAN: eth0 */
 		vty_out(vty, "%% Not supported interface(%s).\n", argv[0]);
 		return CMD_WARNING;
 	}
@@ -212,11 +209,11 @@ DEFUN (no_ip_address, no_ip_address_cmd,
 }
 
 DEFUN (ip_address_dhcp, ip_address_dhcp_cmd, 
-		"ip address ETHNAME dhcp", 
-		IP_STR
-		"config the ip address\n"
-		"interface name(wan)\n"
-		"DHCP mode\n")
+       "ip address ETHNAME dhcp", 
+       IP_STR
+       "config the ip address\n"
+       "interface name(wan)\n"
+       "DHCP mode\n")
 {
 	char line[1024];
 
@@ -254,13 +251,13 @@ DEFUN (ip_address_dhcp, ip_address_dhcp_cmd,
 
 //route add -net 192.168.56.0 netmask 255.255.255.0 gw 192.168.54.1
 DEFUN (ip_route, ip_route_cmd, 
-	"ip route A.B.C.D A.B.C.D A.B.C.D ETHNAME", 
-	IP_STR
-	"config the ip route(temporary)\n"
-	"Destination address\n"
-	"Destination adress netmask e.g. 255.255.255.0\n"
-	"Nexthot address\n"
-	"interface name(lan or wan)\n")
+       "ip route A.B.C.D A.B.C.D A.B.C.D ETHNAME", 
+       IP_STR
+       "config the ip route(temporary)\n"
+       "Destination address\n"
+       "Destination adress netmask e.g. 255.255.255.0\n"
+       "Nexthot address\n"
+       "interface name(lan or wan)\n")
 {
 	char line[1024];
 
@@ -277,7 +274,7 @@ DEFUN (ip_route, ip_route_cmd,
 	config_add_line(config_top, line);
 
 	ENSURE_CONFIG(vty);
-	
+
 	sprintf(line, "uci add network route > /dev/null 2>&1");
 	system(line);
 
@@ -298,17 +295,17 @@ DEFUN (ip_route, ip_route_cmd,
 
 	sprintf(line, "/etc/init.d/network restart > /dev/null 2>&1");
 	system(line);
-	
+
 	return CMD_SUCCESS;
 }
 
 DEFUN (no_ip_route, no_ip_route_cmd, 
-	"no ip route A.B.C.D A.B.C.D", 
-	NO_STR
-	IP_STR
-	"Disable the ip route\n"
-	"Destination address\n"
-	"Destination adress netmask e.g. 255.255.255.0\n")
+       "no ip route A.B.C.D A.B.C.D", 
+       NO_STR
+       IP_STR
+       "Disable the ip route\n"
+       "Destination address\n"
+       "Destination adress netmask e.g. 255.255.255.0\n")
 {
 	char line[1024];
 
@@ -333,10 +330,10 @@ DEFUN (no_ip_route, no_ip_route_cmd,
  * nameserver ::1
  */
 DEFUN (config_dns, config_dns_cmd, 
-	"nameserver A.B.C.D A.B.C.D", 
-	"Config the dns server\n"
-	"the first dns server ip\n"
-	"the second dns server ip\n")
+       "nameserver A.B.C.D A.B.C.D", 
+       "Config the dns server\n"
+       "the first dns server ip\n"
+       "the second dns server ip\n")
 {
 	FILE *fp = NULL;
 	config_del_line_byleft(config_top, "nameserver");
@@ -357,9 +354,9 @@ DEFUN (config_dns, config_dns_cmd,
 }
 
 DEFUN (config_no_dns, config_no_dns_cmd, 
-	"no nameserver",
-	NO_STR
-	"Remove the dns server\n")
+       "no nameserver",
+       NO_STR
+       "Remove the dns server\n")
 {
 	FILE *fp = NULL;
 	config_del_line_byleft(config_top, "nameserver");
@@ -379,23 +376,23 @@ DEFUN (config_no_dns, config_no_dns_cmd,
 
 int cmd_ip_init()
 {
-  cmd_install_element (ENABLE_NODE, &show_ip_address_cmd);
-  cmd_install_element (ENABLE_NODE, &show_ip_config_cmd);
-  cmd_install_element (ENABLE_NODE, &show_ip_config_name_cmd);
-  cmd_install_element (ENABLE_NODE, &show_ip_route_cmd);
+	cmd_install_element (ENABLE_NODE, &show_ip_address_cmd);
+	cmd_install_element (ENABLE_NODE, &show_ip_config_cmd);
+	cmd_install_element (ENABLE_NODE, &show_ip_config_name_cmd);
+	cmd_install_element (ENABLE_NODE, &show_ip_route_cmd);
 
-  cmd_install_element (CONFIG_NODE, &show_ip_address_cmd);
-  cmd_install_element (CONFIG_NODE, &show_ip_config_cmd);
-  cmd_install_element (CONFIG_NODE, &show_ip_config_name_cmd);
-  cmd_install_element (CONFIG_NODE, &show_ip_route_cmd);
+	cmd_install_element (CONFIG_NODE, &show_ip_address_cmd);
+	cmd_install_element (CONFIG_NODE, &show_ip_config_cmd);
+	cmd_install_element (CONFIG_NODE, &show_ip_config_name_cmd);
+	cmd_install_element (CONFIG_NODE, &show_ip_route_cmd);
 
-  cmd_install_element (CONFIG_NODE, &ip_address_cmd);
-  cmd_install_element (CONFIG_NODE, &no_ip_address_cmd);
-  cmd_install_element (CONFIG_NODE, &ip_address_dhcp_cmd);
-  cmd_install_element (CONFIG_NODE, &ip_route_cmd);
-  cmd_install_element (CONFIG_NODE, &no_ip_route_cmd);
-  cmd_install_element (CONFIG_NODE, &config_dns_cmd);
-  cmd_install_element (CONFIG_NODE, &config_no_dns_cmd);
+	cmd_install_element (CONFIG_NODE, &ip_address_cmd);
+	cmd_install_element (CONFIG_NODE, &no_ip_address_cmd);
+	cmd_install_element (CONFIG_NODE, &ip_address_dhcp_cmd);
+	cmd_install_element (CONFIG_NODE, &ip_route_cmd);
+	cmd_install_element (CONFIG_NODE, &no_ip_route_cmd);
+	cmd_install_element (CONFIG_NODE, &config_dns_cmd);
+	cmd_install_element (CONFIG_NODE, &config_no_dns_cmd);
 
-  return 0;
+	return 0;
 }
