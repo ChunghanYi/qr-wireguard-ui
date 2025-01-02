@@ -1,0 +1,45 @@
+#
+# NOTE! Don't add files that are generated in specific
+# subdirectories here. Add them in the ".gitignore" file
+# in that subdirectory instead.
+#
+# Normal rules
+#
+.*
+*.gdb
+*.o
+#*.a
+*.s
+*.so
+*~
+*.tar.gz
+*.tar
+
+#
+# Our programs
+#
+output/
+webagent/web-agentd
+wgshell/external/ncurses-6.2.tar.gz
+wgshell/external/ncurses-6.2/
+wgshell/external/readline-8.1.tar.gz
+wgshell/external/readline-8.1/
+rootfs/lib/
+rootfs/qrwg/qrwg/assets/
+rootfs/qrwg/usr/
+
+#
+# git files that we don't want to ignore even it they are dot-files
+#
+!.gitignore
+
+#
+# Generated include files
+#
+
+# stgit generated dirs
+
+# cscope files
+cscope.*
+ncscope.*
+tags

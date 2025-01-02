@@ -1,0 +1,38 @@
+#
+# NOTE! Don't add files that are generated in specific
+# subdirectories here. Add them in the ".gitignore" file
+# in that subdirectory instead.
+#
+# Normal rules
+#
+.*
+*.gdb
+*.o
+#*.a
+*.s
+*.so
+*~
+*.tar.gz
+*.tar
+
+#
+# Our programs
+#
+vtysh
+#
+
+#
+# git files that we don't want to ignore even it they are dot-files
+#
+!.gitignore
+
+#
+# Generated include files
+#
+
+# stgit generated dirs
+
+# cscope files
+cscope.*
+ncscope.*
+tags
