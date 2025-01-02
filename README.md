@@ -40,10 +40,16 @@ Slowboot
 
 ## My blog postings for this project
   For more information, please read the blog posting below.<br>
+  => Not ready yet.
   <br>
 
 ## Reference codes
-  https://github.com/ngoduykhanh/wireguard-ui <br>
+```
+  a) webui project by ngoduykhanh Khanh Ngo
+     https://github.com/ngoduykhanh/wireguard-ui <br>
+  b) my quantum resistant layer 2 wireguard project
+     https://github.com/ChunghanYi/qr-l2-wireguard <br>
+```
   <br>
 
   __WireGuard is a registered trademark of Jason A. Donenfeld.__
