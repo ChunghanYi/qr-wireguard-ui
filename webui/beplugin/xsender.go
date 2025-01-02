@@ -15,7 +15,7 @@ import (
 )
 
 func handleConnection(c net.Conn, smsg *RequestMessage) bool {
-    defer c.Close()
+	defer c.Close()
 
 	var rmsg ReplyMessage
 	var network bytes.Buffer
@@ -26,7 +26,7 @@ func handleConnection(c net.Conn, smsg *RequestMessage) bool {
 		fmt.Println(err)
 		return false
 	}
-    _, err = c.Write(network.Bytes())
+	_, err = c.Write(network.Bytes())
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -75,9 +75,7 @@ func Xsend(smsg *RequestMessage) bool {
 	smsg.KeyValue[3] = "key4:=1.1.1.1:12345\n"
 	smsg.KeyValue[4] = "key5:=-\n"
 
-	beplugin.Xsend(&smsg)
-
-	if xsend(smsg) == true {
+	if beplugin.Xsend(&smsg) {
 		fmt.Println("Message operation is OK.")
 	} else {
 		fmt.Println("Message operation is failed.")
