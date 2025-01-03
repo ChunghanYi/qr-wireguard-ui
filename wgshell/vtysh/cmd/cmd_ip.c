@@ -116,6 +116,8 @@ DEFUN (ip_address, ip_address_cmd,
 		sprintf(line, "/etc/init.d/network restart > /dev/null 2>&1");
 		system(line);
 
+	} else if (!strncmp(argv[0], "wg0", 3) || !strncmp(argv[0], "wg1", 3)) {
+
 	} else {
 		vty_out(vty, "%% Not supported interface(%s).\n", argv[0]);
 		return CMD_WARNING;
@@ -140,13 +142,15 @@ DEFUN (no_ip_address, no_ip_address_cmd,
        IP_STR
        "Disable the ip address\n"
        "config the ip address\n"
-       "interface name(lan or wan)\n")
+       "interface name(lan|wan|wg0|wg1)\n")
 {
 	char *myargv[10];
 	char line[1024];
 
-	if (strcmp(argv[0], "lan") &&    /* LAN: br-lan(eth1) */
-			strcmp(argv[0], "wan")) {    /* WAN: eth0 */
+	if (strcmp(argv[0], "lan") &&  /* LAN: br-lan(eth1) */
+		strcmp(argv[0], "wan") &&  /* WAN: eth0 */
+		strncmp(argv[0], "wg0", 3) &&
+		strncmp(argv[0], "wg1", 3)) {
 		vty_out(vty, "%% Not supported interface(%s).\n", argv[0]);
 		return CMD_WARNING;
 	}
@@ -191,7 +195,7 @@ DEFUN (no_ip_address, no_ip_address_cmd,
 		sprintf(line, "/etc/init.d/network restart > /dev/null 2>&1");
 		system(line);
 
-	} else if (!strcmp(argv[0], "wg0") || !strcmp(argv[0], "wg1")) {
+	} else if (!strncmp(argv[0], "wg0", 3) || !strncmp(argv[0], "wg1", 3)) {
 
 	} else {
 		vty_out(vty, "%% Not supported interface(%s).\n", argv[0]);
