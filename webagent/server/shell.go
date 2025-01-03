@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"net"
 	"log"
 	"os"
 	"os/exec"
@@ -26,7 +27,7 @@ func runCommand(fullcmd string) bool {
 		return false
 	}
 
-	s := fmt.Sprintf("#!/bin/sh\n/sbin/vtysh -e \"%s\"\n", fullcmd)
+	s := fmt.Sprintf("#!/bin/sh\n/usr/bin/qrwg/vtysh -e \"%s\"\n", fullcmd)
 	_, err = file.Write([]byte(s))
 	if err != nil {
 		fmt.Println(err)
@@ -50,7 +51,8 @@ func runCommand(fullcmd string) bool {
 }
 
 func doAction(rmsg *model.RequestMessage) bool {
-	var KeyValue [16]string  //TDB
+	var KeyValue [16]string
+	var scmd string
 	ok_flag := true
 
 	temp := strings.Split(rmsg.SubCmd, ":=")  //subcmd:=ADD_WIREGUARD_PEER\n
@@ -73,75 +75,86 @@ func doAction(rmsg *model.RequestMessage) bool {
 		KeyValue[i] = t
 	}
 
-	var scmd string
 	switch subcmd {
+	//CLI: hostname WORD
 	case "SET_HOST_NAME":
 		scmd = fmt.Sprintf("hostname %s", KeyValue[0])
-		fmt.Printf(">>> scmd ---> [%s]\n", scmd)
-		//ok_flag = runCommand(scmd)
+		ok_flag = runCommand(scmd)
 
-	case "CHANGE_ADMIN_PASSWORD":
-		scmd = fmt.Sprintf("passwd %s %s", KeyValue[0], KeyValue[1])
-		//ok_flag = runCommand(scmd)
-
+	//CLI: reboot
 	case "REBOOT_SYSTEM":
 		scmd = fmt.Sprintf("reboot")
-		//ok_flag = runCommand(scmd)
+		ok_flag = runCommand(scmd)
 
+	//CLI: ip address ETHNAME A.B.C.D A.B.C.D
 	case "SET_ETHERNET_INTERFACE":
-		//ip address ETHNAME A.B.C.D A.B.C.D
-		scmd = fmt.Sprintf("ip address %s %s %s",
-				KeyValue[0], KeyValue[1], KeyValue[2])
-		//ok_flag = runCommand(scmd)
+		ip := strings.Split(KeyValue[0], "/")  // 172.16.1.254/24
+		_, ipnet, err := net.ParseCIDR(KeyValue[1])
+		if err != nil {
+			fmt.Println("failed parsing CIDR address: ", err)
+			return false
+		} else {
+			scmd = fmt.Sprintf("ip address %s %s %s", KeyValue[0], ip[0], net.IP(ipnet.Mask))
+			ok_flag = runCommand(scmd)
+		}
 
+	//CLI: no ip address ETHNAME
 	case "NO_SET_ETHERNET_INTERFACE":
-		//no ip address ETHNAME
 		scmd = fmt.Sprintf("no ip address %s", KeyValue[0])
-		//ok_flag = runCommand(scmd)
+		ok_flag = runCommand(scmd)
 
+	//CLI: ip route A.B.C.D A.B.C.D A.B.C.D ETHNAME
 	case "ADD_ROUTE_ENTRY":
-		//ip route A.B.C.D A.B.C.D A.B.C.D ETHNAME
 		scmd = fmt.Sprintf("ip route %s %s %s %s",
-				KeyValue[0], KeyValue[1], KeyValue[2], KeyValue[3])
-		//ok_flag = runCommand(scmd)
+				KeyValue[1], KeyValue[2], KeyValue[3], KeyValue[0])
+		ok_flag = runCommand(scmd)
 
+	//CLI: no ip route A.B.C.D A.B.C.D
 	case "REMOVE_ROUTE_ENTRY":
-		//no ip route A.B.C.D A.B.C.D
-		scmd = fmt.Sprintf("no ip route %s %s", KeyValue[0], KeyValue[1])
-		//ok_flag = runCommand(scmd)
+		scmd = fmt.Sprintf("no ip route %s %s", KeyValue[1], KeyValue[2])
+		ok_flag = runCommand(scmd)
 
+	//CLI: ip address ETHNAME A.B.C.D A.B.C.D
 	case "SET_WIREGUARD_INTERFACE":
-		//ip address ETHNAME A.B.C.D A.B.C.D
-		scmd = fmt.Sprintf("ip address %s %s %s",
-				KeyValue[0], KeyValue[1], KeyValue[2])
-		//ok_flag = runCommand(scmd)
+		ip := strings.Split(KeyValue[0], "/")  // 172.16.1.254/24
+		_, ipnet, err := net.ParseCIDR(KeyValue[0])
+		if err != nil {
+			fmt.Println("failed parsing CIDR address: ", err)
+			return false
+		} else {
+			scmd = fmt.Sprintf("ip address wg0 %s %s", ip[0], net.IP(ipnet.Mask))
+			ok_flag = runCommand(scmd)
+		}
 
+	//CLI: no ip address ETHNAME
 	case "NO_SET_WIREGUARD_INTERFACE":
-		//no ip address ETHNAME
-		scmd = fmt.Sprintf("no ip address %s", KeyValue[0])
+		scmd = fmt.Sprintf("no ip address wg0")
+		ok_flag = runCommand(scmd)
+
+	//CLI:
+	case "SET_WIREGUARD_GLOBAL_CONFIG":
 		//ok_flag = runCommand(scmd)
 
+	//CLI: wg peer PUBLICKEY allowed-ips WORD endpoint A.B.C.D:PORT persistent-keepalive NUM
 	case "ADD_WIREGUARD_PEER":
-		//wg peer PUBLICKEY allowed-ips (none|WORD) endpoint (none|FQDN:PORT|A.B.C.D:PORT) persistent-keepalive (off|NUM)
-		scmd = fmt.Sprintf("wg peer %s allowed-ips %s endpoint %s persistent-keepalive %s",
-				KeyValue[0], KeyValue[1], KeyValue[2], KeyValue[3])
-		//ok_flag = runCommand(scmd)
+		scmd = fmt.Sprintf("wg peer %s allowed-ips %s endpoint %s persistent-keepalive 25",
+				KeyValue[0], KeyValue[1], KeyValue[2])
+		ok_flag = runCommand(scmd)
 
+	//CLI: no wg peer PUBLICKEY
 	case "REMOVE_WIREGUARD_PEER":
-		//no wg peer PUBLICKEY
 		scmd = fmt.Sprintf("no wg peer %s", KeyValue[0])
-		//ok_flag = runCommand(scmd)
+		ok_flag = runCommand(scmd)
 
 	default:
-		fmt.Printf("*** Oops! UNKNOWN subcmd received.\n")
-		scmd = "UNKNOWN"
-		ok_flag = false
+		fmt.Printf("*** Oops! UNKNOWN(%s) subcmd received.\n", subcmd)
+		return false
 	}
 	fmt.Printf(">>> scmd = [%s]\n", scmd)
 
 	//write it to vtysh configuration file
 	if ok_flag == true {
-		app := "vtysh"
+		app := "/usr/bin/qrwg/vtysh"
 		arg0 := "-e"
 		arg1 := "write"
 		cmd := exec.Command(app, arg0, arg1)
