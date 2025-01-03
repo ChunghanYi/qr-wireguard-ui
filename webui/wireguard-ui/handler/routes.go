@@ -872,26 +872,42 @@ func RemoveClient(db store.IStore) echo.HandlerFunc {
 
 		// delete client from database
 
+		//BEPLUGINS ==============================================================
+		x_clients, err := db.GetClients(false)
+		if err != nil {
+			log.Error("Cannot get clients for duplicate check")
+			return c.JSON(http.StatusInternalServerError, jsonHTTPResponse{false, "Cannot get clients for duplicate check"})
+		}
+
+		for _, other := range x_clients {
+			if other.Client.ID == client.ID {
+				/*
+				fmt.Printf("other.Client.PublicKey -> [%s]\n", other.Client.PublicKey)
+				fmt.Printf("other.Client.PrivateKey -> [%s]\n", other.Client.PrivateKey)
+				fmt.Printf("other.Client.Name -> [%s]\n", other.Client.Name)
+				fmt.Printf("other.Client.Endpoint -> [%s]\n", other.Client.Endpoint)
+				*/
+
+				var smsg beplugin.RequestMessage
+				smsg.Cmd = "cmd:=HELLO\n"
+				smsg.SubCmd = "subcmd:=REMOVE_WIREGUARD_PEER\n"
+				smsg.FieldCount = "field_count:=1\n"
+				smsg.KeyValue[0] = fmt.Sprintf("PublicKey:=%s\n", other.Client.PublicKey)
+
+				if beplugin.Xsend(&smsg) == true {
+					log.Infof("Backend message operation is OK.")
+				} else {
+					log.Infof("Backend message operation is failed.")
+				}
+				break
+			}
+		}
+		//============================================================== BEPLUGINS
+
 		if err := db.DeleteClient(client.ID); err != nil {
 			log.Error("Cannot delete wireguard client: ", err)
 			return c.JSON(http.StatusInternalServerError, jsonHTTPResponse{false, "Cannot delete client from database"})
 		}
-
-		//BEPLUGINS ==============================================================
-		{
-			var smsg beplugin.RequestMessage
-			smsg.Cmd = "cmd:=HELLO\n"
-			smsg.SubCmd = "subcmd:=REMOVE_WIREGUARD_PEER\n"
-			smsg.FieldCount = "field_count:=1\n"
-			smsg.KeyValue[0] = fmt.Sprintf("PublicKey:=%s\n", client.PublicKey)
-
-			if beplugin.Xsend(&smsg) == true {
-				log.Infof("Backend message operation is OK.")
-			} else {
-				log.Infof("Backend message operation is failed.")
-			}
-		}
-		//============================================================== BEPLUGINS
 
 		log.Infof("Removed wireguard client: %v", client)
 		return c.JSON(http.StatusOK, jsonHTTPResponse{true, "Client removed"})
