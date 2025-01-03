@@ -512,17 +512,23 @@ func NewClient(db store.IStore) echo.HandlerFunc {
 			})
 		}
 
-		//BEPLUGINS - by chunghan.yi@gmail.com
+		//BEPLUGINS ==============================================================
 		{
 			var smsg beplugin.RequestMessage
 			smsg.Cmd = "cmd:=HELLO\n"
 			smsg.SubCmd = "subcmd:=ADD_WIREGUARD_PEER\n"
-			smsg.FieldCount = "field_count:=5\n"
-			smsg.KeyValue[0] = fmt.Sprintf("ID:=%s\n", client.ID)
-			smsg.KeyValue[1] = fmt.Sprintf("PrivateKey:=%s\n", client.PrivateKey)
-			smsg.KeyValue[2] = fmt.Sprintf("PublicKey:=%s\n", client.PublicKey)
-			smsg.KeyValue[3] = fmt.Sprintf("PresharedKey:=%s\n", client.PresharedKey)
-			smsg.KeyValue[4] = fmt.Sprintf("Name:=%s\n", client.Name)
+			smsg.FieldCount = "field_count:=3\n"
+			smsg.KeyValue[0] = fmt.Sprintf("PublicKey:=%s\n", client.PublicKey)
+			if len(client.AllowedIPs) >= 1 {
+				temp := fmt.Sprintf("%s", client.AllowedIPs[0])
+				for i := 1; i < len(client.AllowedIPs); i++ {
+					temp = fmt.Sprintf("%s,%s", temp, client.AllowedIPs[i])
+				}
+				smsg.KeyValue[1] = fmt.Sprintf("AllowedIPs:=%s\n", temp)
+			} else {
+				smsg.KeyValue[1] = fmt.Sprintf("AllowedIPs:=0.0.0.0/0\n")
+			}
+			smsg.KeyValue[2] = fmt.Sprintf("Endpoint:=%s\n", client.Endpoint)
 
 			if beplugin.Xsend(&smsg) == true {
 				log.Infof("Backend message operation is OK.")
@@ -530,6 +536,7 @@ func NewClient(db store.IStore) echo.HandlerFunc {
 				log.Infof("Backend message operation is failed.")
 			}
 		}
+		//============================================================== BEPLUGINS
 
 		log.Infof("Created wireguard client: %v", client)
 
@@ -749,17 +756,23 @@ func UpdateClient(db store.IStore) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, jsonHTTPResponse{false, err.Error()})
 		}
 
-		//BEPLUGINS - by chunghan.yi@gmail.com
+		//BEPLUGINS ==============================================================
 		{
 			var smsg beplugin.RequestMessage
 			smsg.Cmd = "cmd:=HELLO\n"
 			smsg.SubCmd = "subcmd:=ADD_WIREGUARD_PEER\n"
-			smsg.FieldCount = "field_count:=5\n"
-			smsg.KeyValue[0] = fmt.Sprintf("ID:=%s\n", client.ID)
-			smsg.KeyValue[1] = fmt.Sprintf("PrivateKey:=%s\n", client.PrivateKey)
-			smsg.KeyValue[2] = fmt.Sprintf("PublicKey:=%s\n", client.PublicKey)
-			smsg.KeyValue[3] = fmt.Sprintf("PresharedKey:=%s\n", client.PresharedKey)
-			smsg.KeyValue[4] = fmt.Sprintf("Name:=%s\n", client.Name)
+			smsg.FieldCount = "field_count:=3\n"
+			smsg.KeyValue[0] = fmt.Sprintf("PublicKey:=%s\n", client.PublicKey)
+			if len(client.AllowedIPs) >= 1 {
+				temp := fmt.Sprintf("%s", client.AllowedIPs[0])
+				for i := 1; i < len(client.AllowedIPs); i++ {
+					temp = fmt.Sprintf("%s,%s", temp, client.AllowedIPs[i])
+				}
+				smsg.KeyValue[1] = fmt.Sprintf("AllowedIPs:=%s\n", temp)
+			} else {
+				smsg.KeyValue[1] = fmt.Sprintf("AllowedIPs:=0.0.0.0/0\n")
+			}
+			smsg.KeyValue[2] = fmt.Sprintf("Endpoint:=%s\n", client.Endpoint)
 
 			if beplugin.Xsend(&smsg) == true {
 				log.Infof("Backend message operation is OK.")
@@ -767,6 +780,7 @@ func UpdateClient(db store.IStore) echo.HandlerFunc {
 				log.Infof("Backend message operation is failed.")
 			}
 		}
+		//============================================================== BEPLUGINS
 
 		log.Infof("Updated client information successfully => %v", client)
 
@@ -863,6 +877,22 @@ func RemoveClient(db store.IStore) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, jsonHTTPResponse{false, "Cannot delete client from database"})
 		}
 
+		//BEPLUGINS ==============================================================
+		{
+			var smsg beplugin.RequestMessage
+			smsg.Cmd = "cmd:=HELLO\n"
+			smsg.SubCmd = "subcmd:=REMOVE_WIREGUARD_PEER\n"
+			smsg.FieldCount = "field_count:=1\n"
+			smsg.KeyValue[0] = fmt.Sprintf("PublicKey:=%s\n", client.PublicKey)
+
+			if beplugin.Xsend(&smsg) == true {
+				log.Infof("Backend message operation is OK.")
+			} else {
+				log.Infof("Backend message operation is failed.")
+			}
+		}
+		//============================================================== BEPLUGINS
+
 		log.Infof("Removed wireguard client: %v", client)
 		return c.JSON(http.StatusOK, jsonHTTPResponse{true, "Client removed"})
 	}
@@ -904,7 +934,7 @@ func WireGuardServerInterfaces(db store.IStore) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, jsonHTTPResponse{false, "Interface IP address must be in CIDR format"})
 		}
 
-		//BEPLUGINS - by chunghan.yi@gmail.com
+		//BEPLUGINS ==============================================================
 		{
 			var smsg beplugin.RequestMessage
 			smsg.Cmd = "cmd:=HELLO\n"
@@ -919,6 +949,7 @@ func WireGuardServerInterfaces(db store.IStore) echo.HandlerFunc {
 				log.Infof("Backend message operation is failed.")
 			}
 		}
+		//============================================================== BEPLUGINS
 
 		log.Infof("Updated wireguard server interfaces settings: %v", serverInterface)
 
@@ -1084,11 +1115,11 @@ func GlobalSettingSubmit(db store.IStore) echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, jsonHTTPResponse{false, "Cannot generate Wireguard key pair"})
 		}
 
-		//BEPLUGINS - by chunghan.yi@gmail.com
+		//BEPLUGINS ==============================================================
 		{
 			var smsg beplugin.RequestMessage
 			smsg.Cmd = "cmd:=HELLO\n"
-			smsg.SubCmd = "subcmd:=SET_WIREGUARD_INTERFACE\n"
+			smsg.SubCmd = "subcmd:=SET_WIREGUARD_GLOBAL_CONFIG\n"
 			smsg.FieldCount = "field_count:=3\n"
 			smsg.KeyValue[0] = fmt.Sprintf("EndpointAddress:=%s\n", globalSettings.EndpointAddress)
 			smsg.KeyValue[1] = fmt.Sprintf("MTU:=%d\n", globalSettings.MTU)
@@ -1100,6 +1131,7 @@ func GlobalSettingSubmit(db store.IStore) echo.HandlerFunc {
 				log.Infof("Backend message operation is failed.")
 			}
 		}
+		//============================================================== BEPLUGINS
 
 		log.Infof("Updated global settings: %v", globalSettings)
 
