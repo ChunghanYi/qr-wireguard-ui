@@ -53,7 +53,8 @@ Slowboot
 ```
   <br>
 
-  __wireguard-ui project is created by ngoduykhanh Khanh Ngo.__
+  __<1> wireguard-ui project is created by ngoduykhanh Khanh Ngo.__
   <br>
-  __WireGuard is a registered trademark of Jason A. Donenfeld.__
+  <br>
+  __<2> WireGuard is a registered trademark of Jason A. Donenfeld.__
 
