@@ -28,7 +28,8 @@ $ ls -l
 <Ubuntu 22.04 LTS>
 $ scp ./qr_wireguard_0.9.00.tar.gz root@192.168.2.1:~/workspace
 $ ssh root@192.168.2.1
-<NanoPi R2S Plus>
+
+<NanoPi R2S Plus/FriendlyWrt 23.05.3>
 # cd /root/workspace
 # tar xvzf qr_wireguard_0.9.00.tar.gz
 # cd qr_install
@@ -52,5 +53,6 @@ Slowboot
 ```
   <br>
 
+  __wireguard-ui project is created by ngoduykhanh Khanh Ngo.__
   __WireGuard is a registered trademark of Jason A. Donenfeld.__
 
