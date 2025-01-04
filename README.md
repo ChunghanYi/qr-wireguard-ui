@@ -39,7 +39,7 @@ Good luck~
 Slowboot
 ```
 
-## My blog postings for this project
+## My blog posting for this project
   For more information, please read the blog posting below.<br>
   https://slowbootkernelhacks.blogspot.com/2025/01/quantum-resistant-wireguard-from-ui-to.html
   <br>
@@ -54,5 +54,6 @@ Slowboot
   <br>
 
   __wireguard-ui project is created by ngoduykhanh Khanh Ngo.__
+  <br>
   __WireGuard is a registered trademark of Jason A. Donenfeld.__
 
