@@ -71,6 +71,7 @@ func (t *TCPServer) send_message(c net.Conn, msg_cmd string, xmsg *model.Request
 	_, err = c.Write(network.Bytes())
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	switch (msg_cmd) {

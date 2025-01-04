@@ -22,6 +22,8 @@ sleep 1
 #Run the wireguard web ui
 if [ ! -r /etc/wireguard/wg0.conf ]; then
 	mkdir -p /etc/wireguard > /dev/null 2>&1
+else
+	echo > /etc/wireguard/wg0.conf
 fi
 /usr/bin/qrwg/wireguard-ui &
 sleep 2

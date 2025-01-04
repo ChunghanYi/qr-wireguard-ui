@@ -32,6 +32,6 @@ const (
 )
 
 const (
-	SERVER_PORT_DEFAULT = ":51821"
+	SERVER_PORT_DEFAULT = "127.0.0.1:51821"
 	TEMP_SHELL_SCRIPT_PATH = "/tmp/gorun.sh"
 )

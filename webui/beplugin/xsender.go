@@ -62,7 +62,7 @@ func Xsend(smsg *RequestMessage) bool {
 	return handleConnection(conn, smsg)
 }
 
-/*
+/* usage example:
 {
 	var smsg beplugin.RequestMessage
 
