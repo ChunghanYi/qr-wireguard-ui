@@ -40,15 +40,15 @@ Slowboot
 
 ## My blog postings for this project
   For more information, please read the blog posting below.<br>
-  => Not ready yet.
+  https://slowbootkernelhacks.blogspot.com/2025/01/quantum-resistant-wireguard-from-ui-to.html
   <br>
 
 ## Reference codes
 ```
   a) webui project by ngoduykhanh Khanh Ngo
-     https://github.com/ngoduykhanh/wireguard-ui <br>
+     https://github.com/ngoduykhanh/wireguard-ui
   b) my quantum resistant layer 2 wireguard project
-     https://github.com/ChunghanYi/qr-l2-wireguard <br>
+     https://github.com/ChunghanYi/qr-l2-wireguard
 ```
   <br>
 
