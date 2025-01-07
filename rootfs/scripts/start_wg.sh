@@ -25,5 +25,5 @@ if [ ! -r /etc/wireguard/wg0.conf ]; then
 else
 	echo > /etc/wireguard/wg0.conf
 fi
-/usr/bin/qrwg/wireguard-ui &
+/usr/bin/qrwg/wireguard-ui -base-path /qrwg &
 sleep 2
