@@ -22,6 +22,7 @@ import (
 
 const (
 	WBED_VERSION = "0.9.0"
+	LOG_FILE = "/var/log/webagent.log"
 	ENV_WG_PROCESS_FOREGROUND = "WG_PROCESS_FOREGROUND"
 )
 const (
@@ -45,7 +46,6 @@ func main() {
 	}
 
 	var foreground bool
-	// Parse arguments
 	switch strings.ToLower(os.Args[1]) {
 	case "-v", "--version":
 		printVersion()
@@ -57,22 +57,21 @@ func main() {
 	case "-d", "--daemon":
 		foreground = false
 
+		// Specify the log file
+		file, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		log.SetOutput(file)
+
 	default:
 		printUsage()
 		os.Exit(ExitSetupFailed)
 	}
-
-	// Specify the log file
-	file, err := os.OpenFile("/var/log/webagent.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-	log.SetOutput(file)
-
-	// daemonize the process
+	
+	// TBD: daemonize the process
 	if !foreground {
-		//TBD
 	}
 
 	// Create a channel for OS signal
@@ -89,7 +88,7 @@ func main() {
 	}()
 
 	log.Println("Starting the web-agentd...")
-	s, err := server.Start_Server()
+	s, _ := server.Start_Server()
 
 	// wait for program to terminate
 	for !server.EndServer {

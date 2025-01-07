@@ -16,7 +16,7 @@ fi
 /usr/bin/qrwg/vtysh -b > /dev/null 2>&1
 
 #Run the wireguard web agent
-/usr/bin/qrwg/web-agentd -f &
+/usr/bin/qrwg/web-agentd -d &
 sleep 1
 
 #Run the wireguard web ui
