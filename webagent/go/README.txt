@@ -6,7 +6,7 @@ go build or make
 
 <How to run>
 ============
-./web-agentd -f
+./web-agentd -d
 
 <How to check logs>
 ===================
