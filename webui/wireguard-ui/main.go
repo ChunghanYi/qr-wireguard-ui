@@ -167,7 +167,7 @@ func init() {
 		fmt.Println("Email from name\t:", util.EmailFromName)
 		//fmt.Println("Session secret\t:", util.SessionSecret)
 		fmt.Println("Custom wg.conf\t:", util.WgConfTemplate)
-		fmt.Println("Base path\t:", util.BasePath+"/qrwg")		//by chunghan.yi@gmail.com, 01/02/2025
+		fmt.Println("Base path\t:", util.BasePath+"/")
 		fmt.Println("Subnet ranges\t:", util.GetSubnetRangesString())
 	}
 }
