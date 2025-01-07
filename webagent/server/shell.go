@@ -23,21 +23,21 @@ import (
 func runCommand(fullcmd string) bool {
 	file, err := os.Create(TEMP_SHELL_SCRIPT_PATH)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 		return false
 	}
+	defer file.Close()
 
 	s := fmt.Sprintf("#!/bin/sh\n/usr/bin/qrwg/vtysh -e \"%s\"\n", fullcmd)
 	_, err = file.Write([]byte(s))
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 		return false
 	}
-	file.Close()
 
 	err = os.Chmod(TEMP_SHELL_SCRIPT_PATH, 0755)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 		return false
 	}
 
@@ -57,21 +57,21 @@ func doAction(rmsg *model.RequestMessage) bool {
 
 	temp := strings.Split(rmsg.SubCmd, ":=")  //subcmd:=ADD_WIREGUARD_PEER\n
 	subcmd := strings.TrimSuffix(temp[1], "\n")
-	fmt.Printf(">>> subcmd:=%s\n", subcmd)
+	log.Printf(">>> subcmd:=%s\n", subcmd)
 
 	temp = strings.Split(rmsg.FieldCount, ":=")  //field_count:=X\n
 	t := strings.TrimSuffix(temp[1], "\n")
 	count, err := strconv.Atoi(t)
 	if err != nil {
-		log.Println("strconv.Atoi error:", err)
+		log.Fatalln("strconv.Atoi error:", err)
 		return false
 	}
-	fmt.Printf(">>> field_count:=%d\n", count)
+	log.Printf(">>> field_count:=%d\n", count)
 
 	for i := 0; i < count; i++ {
 		temp = strings.Split(rmsg.KeyValue[i], ":=")  //keyN:=XXXXXXXXXXXX\n
 		t = strings.TrimSuffix(temp[1], "\n")
-		fmt.Printf(">>> key%d:=%s\n", i, t)
+		log.Printf(">>> key%d:=%s\n", i, t)
 		KeyValue[i] = t
 	}
 
@@ -91,7 +91,7 @@ func doAction(rmsg *model.RequestMessage) bool {
 		ip := strings.Split(KeyValue[0], "/")  // 172.16.1.254/24
 		_, ipnet, err := net.ParseCIDR(KeyValue[1])
 		if err != nil {
-			fmt.Println("failed parsing CIDR address: ", err)
+			log.Fatalln("failed parsing CIDR address: ", err)
 			return false
 		} else {
 			scmd = fmt.Sprintf("ip address %s %s %s", KeyValue[0], ip[0], net.IP(ipnet.Mask))
@@ -119,7 +119,7 @@ func doAction(rmsg *model.RequestMessage) bool {
 		ip := strings.Split(KeyValue[0], "/")  // 172.16.1.254/24
 		_, ipnet, err := net.ParseCIDR(KeyValue[0])
 		if err != nil {
-			fmt.Println("failed parsing CIDR address: ", err)
+			log.Fatalln("failed parsing CIDR address: ", err)
 			return false
 		} else {
 			scmd = fmt.Sprintf("ip address wg0 %s %s", ip[0], net.IP(ipnet.Mask))
@@ -147,10 +147,10 @@ func doAction(rmsg *model.RequestMessage) bool {
 		ok_flag = runCommand(scmd)
 
 	default:
-		fmt.Printf("*** Oops! UNKNOWN(%s) subcmd received.\n", subcmd)
+		log.Printf("*** Oops! UNKNOWN(%s) subcmd received.\n", subcmd)
 		return false
 	}
-	fmt.Printf(">>> scmd = [%s]\n", scmd)
+	log.Printf(">>> scmd = [%s]\n", scmd)
 
 	//write it to vtysh configuration file
 	if ok_flag == true {

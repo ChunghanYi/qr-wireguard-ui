@@ -19,6 +19,8 @@ import (
 	"web-agentd/model"
 )
 
+var EndServer bool
+
 //Server interface
 type Server interface {
 	Run() error
@@ -64,13 +66,12 @@ func (t *TCPServer) send_message(c net.Conn, msg_cmd string, xmsg *model.Request
 	enc := gob.NewEncoder(&network)
 	err := enc.Encode(smsg)
 	if err != nil {
-		log.Println("encoding error");
-		log.Println(err)
+		log.Fatalln(err)
 		return
 	}
 	_, err = c.Write(network.Bytes())
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 		return
 	}
 
@@ -108,7 +109,7 @@ func (t *TCPServer) handleConnection(c net.Conn) {
 		dec := gob.NewDecoder(r)
 		err = dec.Decode(&rmsg)
 		if err != nil {
-			log.Println("decoding error:", err)
+			log.Fatalln("decoding error:", err)
 			return
 		}
 
@@ -116,7 +117,7 @@ func (t *TCPServer) handleConnection(c net.Conn) {
 		x := strings.TrimSuffix(temp[1], "\n")
 		switch (x) {
 		case "HELLO":
-			fmt.Printf(">>> cmd:=HELLO message received.\n")
+			log.Printf(">>> cmd:=HELLO message received.\n")
 			flag := doAction(&rmsg)
 			if flag == true {
 				t.send_OK(c, &rmsg)
@@ -162,15 +163,17 @@ func (t *TCPServer) Close() (err error) {
 	return t.server.Close()
 }
 
-func Start_Server() {
+func Start_Server() (Server, error) {
 	var err error
 	tcp, err = NewServer("tcp", SERVER_PORT_DEFAULT)
 	if err != nil {
-		log.Println("error starting TCP server")
-		return
+		log.Fatalln("error starting TCP server")
+		return tcp, err
 	}
 
 	go func() {
 		tcp.Run()
 	}()
+
+	return tcp, err
 }
