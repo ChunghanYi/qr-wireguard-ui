@@ -77,7 +77,7 @@ build_web_agent()
 {
 	cd $CWD
 
-	cd webagent
+	cd webagent/go
 	if [ $1 = "release" ]; then
 		make -f Makefile.arm64 clean
 		make -f Makefile.arm64
