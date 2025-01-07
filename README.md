@@ -34,6 +34,40 @@ $ ssh root@192.168.2.1
 # tar xvzf qr_wireguard_0.9.00.tar.gz
 # cd qr_install
 # ./Install.sh
+  -> the nanopi will be rebooted
+
+<Ubuntu 22.04 LTS>
+$ ssh root@192.168.2.1
+nanopi login: root
+Password:
+ ___    _             _ _    __      __   _
+| __| _(_)___ _ _  __| | |_  \ \    / / _| |_
+| _| '_| / -_) ' \/ _` | | || \ \/\/ / '_|  _|
+|_||_| |_\___|_||_\__,_|_|\_, |\_/\_/|_|  \__|
+                          |__/
+ -----------------------------------------------------
+ FriendlyWrt 23.05.3, r23809-234f1a2efa
+ -----------------------------------------------------
+Build On Jan  2 2025 16:15:52
+nanopi> en
+nanopi# configure  terminal  
+nanopi(config)# ?
+  bridge      add/modify the bridge information
+  end         End a cli
+  exit        Exit current mode and down to previous mode
+  hostname    Set system's network name
+  ip          IP information set
+  nameserver  Config the dns server
+  no          Negate a command or set its defaults
+  ping        Send echo messages
+  poweroff    Power off the system
+  reboot      Reboot the system
+  sfirewall   Configure smart firewall rules
+  show        Show running system information
+  ssh         Open a ssh connection
+  wg          Configure WireGuard rules
+  write       Write running configuration to memory, network, or terminal
+nanopi(config)# 
 
 Good luck~
 Slowboot
