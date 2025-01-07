@@ -63,7 +63,6 @@ build_wireguard_ui()
 		GOOS=linux GOARCH=arm64 go build -o wireguard-ui	
 		cp ./wireguard-ui $INST_PKG_PATH/usr/bin/qrwg
 		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/wireguard-ui
-		cp -R ./assets $INST_PKG_PATH/qrwg
 	elif [ $1 = "clean" ]; then
 		GOOS=linux GOARCH=arm64 go clean
 	fi
