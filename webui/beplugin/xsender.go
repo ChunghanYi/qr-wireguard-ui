@@ -1,6 +1,6 @@
 /*
  * wireguard-ui backend plugin routines
- * Copyright (c) 2024 Chunghan Yi <chunghan.yi@gmail.com>
+ * Copyright (c) 2024-2025 Chunghan Yi <chunghan.yi@gmail.com>
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -12,9 +12,11 @@ import (
 	"net"
 	"bytes"
 	"encoding/gob"
+	"strconv"
+	"strings"
 )
 
-func handleConnection(c net.Conn, smsg *RequestMessage) bool {
+func handleConnectionGo(c net.Conn, smsg *RequestMessage) bool {
 	defer c.Close()
 
 	var rmsg ReplyMessage
@@ -22,7 +24,6 @@ func handleConnection(c net.Conn, smsg *RequestMessage) bool {
 	enc := gob.NewEncoder(&network)
 	err := enc.Encode(*smsg)
 	if err != nil {
-		fmt.Println("encoding error");
 		fmt.Println(err)
 		return false
 	}
@@ -53,13 +54,54 @@ func handleConnection(c net.Conn, smsg *RequestMessage) bool {
 	}
 }
 
+func handleConnectionCPP(c net.Conn, smsg *RequestMessage) bool {
+	defer c.Close()
+
+	var s string
+	temp := strings.Split(smsg.FieldCount, ":=")  //field_count:=X\n
+	t := strings.TrimSuffix(temp[1], "\n")
+	count, err := strconv.Atoi(t)
+    if err != nil {
+		s = smsg.Cmd + smsg.SubCmd + smsg.FieldCount
+    } else {
+		t := smsg.KeyValue[0]
+		for i := 1; i < count; i++ {
+			t = fmt.Sprintf("%s%s", t, smsg.KeyValue[i])
+		}
+		s = smsg.Cmd + smsg.SubCmd + smsg.FieldCount + t
+	}
+
+	_, err = c.Write([]byte(s))
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	data := make([]byte, 4096)
+	n, err := c.Read(data)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	if string(data[:n-1]) == "cmd:=OK" {
+		return true
+	} else {
+		return false
+	}
+}
+
 func Xsend(smsg *RequestMessage) bool {
 	conn, err := net.Dial("tcp", SERVER_PORT_DEFAULT)
 	if err != nil {
 		fmt.Println(err)
 		return false
 	}
-	return handleConnection(conn, smsg)
+
+    //with web-agentd implemented as Go
+    return handleConnectionGo(conn, smsg)
+
+    //with web-agentd implemented as C++
+    //return handleConnectionCPP(conn, smsg)
 }
 
 /* usage example:
