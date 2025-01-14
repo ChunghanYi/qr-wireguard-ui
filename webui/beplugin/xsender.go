@@ -14,6 +14,7 @@ import (
 	"encoding/gob"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func handleConnectionGo(c net.Conn, smsg *RequestMessage) bool {
@@ -30,6 +31,12 @@ func handleConnectionGo(c net.Conn, smsg *RequestMessage) bool {
 	_, err = c.Write(network.Bytes())
 	if err != nil {
 		fmt.Println(err)
+	}
+
+	err = c.SetReadDeadline(time.Now().Add(2 * time.Second))
+	if err != nil {
+		fmt.Println("SetReadDeadline failed:", err)
+		return false
 	}
 
 	data := make([]byte, 4096)
@@ -61,9 +68,9 @@ func handleConnectionCPP(c net.Conn, smsg *RequestMessage) bool {
 	temp := strings.Split(smsg.FieldCount, ":=")  //field_count:=X\n
 	t := strings.TrimSuffix(temp[1], "\n")
 	count, err := strconv.Atoi(t)
-    if err != nil {
+	if err != nil {
 		s = smsg.Cmd + smsg.SubCmd + smsg.FieldCount
-    } else {
+	} else {
 		t := smsg.KeyValue[0]
 		for i := 1; i < count; i++ {
 			t = fmt.Sprintf("%s%s", t, smsg.KeyValue[i])
@@ -74,6 +81,12 @@ func handleConnectionCPP(c net.Conn, smsg *RequestMessage) bool {
 	_, err = c.Write([]byte(s))
 	if err != nil {
 		fmt.Println(err)
+	}
+
+	err = c.SetReadDeadline(time.Now().Add(2 * time.Second))
+	if err != nil {
+		fmt.Println("SetReadDeadline failed:", err)
+		return false
 	}
 
 	data := make([]byte, 4096)
