@@ -4,12 +4,12 @@
 # This script creates a quantum-resistant wireguard package for nanopi openwrt.
 # (This shell script has been tested in the Ubuntu 22.04 LTS environment)
 #
-# Copyright (c) 2024 Chunghan Yi <chunghan.yi@gmail.com>
+# Copyright (c) 2024-2025 Chunghan Yi <chunghan.yi@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 #
 # ///////////////////////////////////////////////////////////////////////////////
 
-VERSION=0.9.00
+VERSION=0.9.01
 CWD=$(pwd)
 OUTPUT=$CWD/output
 INST_PKG_PATH=$CWD/rootfs/qrwg
@@ -71,9 +71,9 @@ build_wireguard_ui()
 }
 
 #
-# Backend agent for wireguard-ui
+# Backend agent(Go version) for wireguard-ui
 #
-build_web_agent()
+build_web_agent_Go()
 {
 	cd $CWD
 
@@ -83,8 +83,69 @@ build_web_agent()
 		make -f Makefile.arm64
 		cp ./web-agentd $INST_PKG_PATH/usr/bin/qrwg
 		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/web-agentd
+		rm -f $INST_PKG_PATH/qrwg/config/.cppagent_running > /dev/null 2>&1
 	elif [ $1 = "clean" ]; then
 		make -f Makefile.arm64 clean
+		rm -f $INST_PKG_PATH/qrwg/config/.cppagent_running > /dev/null 2>&1
+	fi
+
+	cd $CWD
+}
+
+#
+# Backend agent(C++ version) for wireguard-ui
+#
+build_web_agent_CPP()
+{
+	cd $CWD
+
+	CPP_PATH=$CWD/webagent/cpp
+	cd $CPP_PATH
+
+	if [ $1 = "release" ]; then
+		if [ ! -d ./external/spdlog ]; then
+			cd external
+			git clone https://github.com/gabime/spdlog
+			cd spdlog
+			mkdir build && cd build
+			#cmake .. && cmake --build .
+			export CC=aarch64-openwrt-linux-musl-gcc
+			export CPP=aarch64-openwrt-linux-musl-g++
+			export AR=aarch64-openwrt-linux-musl-ar
+			export RANLIB=aarch64-openwrt-linux-musl-ranlib
+			cmake -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=arm64v8 \
+				-DCMAKE_CXX_COMPILER=$TOOLCHAIN_PATH/aarch64-openwrt-linux-musl-g++ \
+				..
+			make
+
+			if [ ! -d $CPP_PATH/external/lib ]; then
+				mkdir $CPP_PATH/external/lib > /dev/null 2>&1
+			fi
+			cp ./libspdlog.a ../../lib > /dev/null 2>&1
+			cd ..
+			cp -R ./include ../lib > /dev/null 2>&1
+			cd $CPP_PATH
+		fi
+
+		if [ ! -d $CPP_PATH/build ]; then
+			mkdir -p $CPP_PATH/build
+		fi
+		cd build
+
+		export CC=aarch64-openwrt-linux-musl-gcc
+		export CPP=aarch64-openwrt-linux-musl-g++
+		export AR=aarch64-openwrt-linux-musl-ar
+		export RANLIB=aarch64-openwrt-linux-musl-ranlib
+		cmake .. && make
+
+		cp ./web-agentd $INST_PKG_PATH/usr/bin/qrwg
+		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/web-agentd
+		touch $INST_PKG_PATH/qrwg/config/.cppagent_running > /dev/null 2>&1
+	elif [ $1 = "clean" ]; then
+		rm -rf ./build
+		rm -rf ./external/lib
+		rm -rf ./external/spdlog
+		rm -f $INST_PKG_PATH/qrwg/config/.cppagent_running > /dev/null 2>&1
 	fi
 
 	cd $CWD
@@ -167,9 +228,18 @@ build_wireguard_package()
 	print_green ">>> Building a quantum-resistant wireguard package for nanopi...     "
 	print_green "+-------------------------------------------------------------------+"
 
-	build_wireguard_ui release
-	build_web_agent release
 	build_vtysh release
+	build_wireguard_ui release
+
+	while true; do
+		read -p ">>> Do you want to build web-agentd based on Go?(y/n)" go
+		case $go in
+			[Yy]* ) build_web_agent_Go release; break;;
+			[Nn]* ) build_web_agent_CPP release; break;;
+			* ) print_red "Please answer yes(Go) or no(CPP).";;
+		esac
+	done
+
 	#build_qr_wireguard release
 
 	print_green ">>> done."
@@ -180,10 +250,11 @@ clean_wireguard_package()
 	echo
 	print_green ">>> Cleaning ..."
 
-	build_wireguard_ui clean
-	build_web_agent clean
 	build_vtysh clean
-	#build_qr_wireguard release
+	build_wireguard_ui clean
+	build_web_agent_Go clean
+	build_web_agent_CPP clean
+	#build_qr_wireguard clean
 
 	print_green ">>> done."
 }
@@ -241,10 +312,6 @@ create_outputs()
 
 	copy_base_library
 
-	#cd $INST_PKG_PATH
-	#chmod 755 * > /dev/null 2>&1
-	#cd ../..
-		
 	mkdir -p qr_install > /dev/null 2>&1
 
 	cd rootfs/qrwg
