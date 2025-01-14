@@ -7,6 +7,6 @@
 #pragma once
 
 enum ClientEvent {
-    DISCONNECTED,
-    INCOMING_MSG
+	DISCONNECTED,
+	INCOMING_MSG
 };

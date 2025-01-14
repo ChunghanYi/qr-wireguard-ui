@@ -28,16 +28,16 @@
 
 class TcpServer {
 public:
-    TcpServer();
-    ~TcpServer();
-    pipe_ret_t start(int port, int maxNumOfClients = 5, bool removeDeadClientsAutomatically = true);
-    void initializeSocket();
-    void bindAddress(int port);
-    void listenToClients(int maxNumOfClients);
-    std::string acceptClient(uint timeout);
-    void subscribe(const server_observer_t &observer);
-    pipe_ret_t sendToAllClients(const char *msg, size_t size);
-    pipe_ret_t sendToClient(const std::string &clientIP, const char *msg, size_t size);
+	TcpServer();
+	~TcpServer();
+	pipe_ret_t start(int port, int maxNumOfClients = 5, bool removeDeadClientsAutomatically = true);
+	void initializeSocket();
+	void bindAddress(int port);
+	void listenToClients(int maxNumOfClients);
+	std::string acceptClient(uint timeout);
+	void subscribe(const server_observer_t &observer);
+	pipe_ret_t sendToAllClients(const char *msg, size_t size);
+	pipe_ret_t sendToClient(const std::string &clientIP, const char *msg, size_t size);
 
 	bool sendMessage(const Client &client, const std::string result);
 	bool send_OK(const Client &client);
@@ -45,31 +45,31 @@ public:
 	bool shouldTerminate();
 	void setTerminate(bool flag);
 
-    pipe_ret_t close();
-    void printClients();
+	pipe_ret_t close();
+	void printClients();
 
 private:
-    FileDescriptor _sockfd;
-    struct sockaddr_in _serverAddress;
-    struct sockaddr_in _clientAddress;
-    fd_set _fds;
-    std::vector<Client*> _clients;
-    std::vector<server_observer_t> _subscribers;
+	FileDescriptor _sockfd;
+	struct sockaddr_in _serverAddress;
+	struct sockaddr_in _clientAddress;
+	fd_set _fds;
+	std::vector<Client*> _clients;
+	std::vector<server_observer_t> _subscribers;
 
-    std::mutex _subscribersMtx;
-    std::mutex _clientsMtx;
+	std::mutex _subscribersMtx;
+	std::mutex _clientsMtx;
 
-    std::thread *_clientsRemoverThread = nullptr;
-    std::atomic<bool> _stopRemoveClientsTask;
+	std::thread *_clientsRemoverThread = nullptr;
+	std::atomic<bool> _stopRemoveClientsTask;
 
 	bool _flagTerminate;
 
-    void publishClientMsg(const Client &client, const char *msg, size_t msgSize);
-    void publishSingleClientMsg(const Client &client, const char *msg, size_t msgSize);
-    void publishClientDisconnected(const std::string&, const std::string&);
-    pipe_ret_t waitForClient(uint32_t timeout);
-    void clientEventHandler(const Client&, ClientEvent, const std::string &msg);
-    void removeDeadClients();
-    void terminateDeadClientsRemover();
-    static pipe_ret_t sendToClient(const Client &client, const char *msg, size_t size);
+	void publishClientMsg(const Client &client, const char *msg, size_t msgSize);
+	void publishSingleClientMsg(const Client &client, const char *msg, size_t msgSize);
+	void publishClientDisconnected(const std::string&, const std::string&);
+	pipe_ret_t waitForClient(uint32_t timeout);
+	void clientEventHandler(const Client&, ClientEvent, const std::string &msg);
+	void removeDeadClients();
+	void terminateDeadClientsRemover();
+	static pipe_ret_t sendToClient(const Client &client, const char *msg, size_t size);
 };

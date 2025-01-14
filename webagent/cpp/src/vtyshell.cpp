@@ -50,7 +50,6 @@ namespace vtyshell {
 		return res;
 	}
 
-	//Too C style :(
 	bool getIPNetmask(std::string netinfo, char *ipstr, char *netmaskstr) {
 		char *mask;
 		int maskbits;

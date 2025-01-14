@@ -16,34 +16,34 @@
 #define SELECT_TIMEOUT 0
 
 namespace fd_wait {
-    /**
-     * monitor file descriptor and wait for I/O operation
-     */
-    Result waitFor(const FileDescriptor &fileDescriptor, uint32_t timeoutSeconds) {
-        struct timeval tv;
-        tv.tv_sec = timeoutSeconds;
-        tv.tv_usec = 0;
-        fd_set fds;
+	/**
+	 * monitor file descriptor and wait for I/O operation
+	 */
+	Result waitFor(const FileDescriptor &fileDescriptor, uint32_t timeoutSeconds) {
+		struct timeval tv;
+		tv.tv_sec = timeoutSeconds;
+		tv.tv_usec = 0;
+		fd_set fds;
 
-        FD_ZERO(&fds);
-        FD_SET(fileDescriptor.get(), &fds);
-        const int selectRet = select(fileDescriptor.get() + 1, &fds, nullptr, nullptr, &tv);
+		FD_ZERO(&fds);
+		FD_SET(fileDescriptor.get(), &fds);
+		const int selectRet = select(fileDescriptor.get() + 1, &fds, nullptr, nullptr, &tv);
 
-        if (selectRet == SELECT_FAILED) {
-            return Result::FAILURE;
-        } else if (selectRet == SELECT_TIMEOUT) {
-            return Result::TIMEOUT;
-        }
-        return Result::SUCCESS;
-    }
+		if (selectRet == SELECT_FAILED) {
+			return Result::FAILURE;
+		} else if (selectRet == SELECT_TIMEOUT) {
+			return Result::TIMEOUT;
+		}
+		return Result::SUCCESS;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
 pipe_ret_t pipe_ret_t::failure(const std::string &msg) {
-    return pipe_ret_t(false, msg);
+	return pipe_ret_t(false, msg);
 }
 
 pipe_ret_t pipe_ret_t::success(const std::string &msg) {
-    return pipe_ret_t(true, msg);
+	return pipe_ret_t(true, msg);
 }

@@ -24,7 +24,7 @@ namespace vtyshell {
 		NO_SET_WIREGUARD_INTERFACE  = 121,
 		SET_WIREGUARD_GLOBAL_CONFIG = 122,
 		ADD_WIREGUARD_PEER          = 123,
-		REMOVE_WIREGUARD_PEER       = 124,
+		REMOVE_WIREGUARD_PEER       = 124
 	};
 
 	void initializeVtyshMap();
