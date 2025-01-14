@@ -15,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"os"
 )
 
 func handleConnectionGo(c net.Conn, smsg *RequestMessage) bool {
@@ -110,11 +111,13 @@ func Xsend(smsg *RequestMessage) bool {
 		return false
 	}
 
-    //with web-agentd implemented as Go
-    return handleConnectionGo(conn, smsg)
-
-    //with web-agentd implemented as C++
-    //return handleConnectionCPP(conn, smsg)
+	if _, err := os.Stat("/qrwg/config/.cppagent_running"); err == nil {
+		//with web-agentd implemented as C++
+		return handleConnectionCPP(conn, smsg)
+	} else {
+		//with web-agentd implemented as Go
+		return handleConnectionGo(conn, smsg)
+	}
 }
 
 /* usage example:
