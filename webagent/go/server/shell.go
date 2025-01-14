@@ -89,12 +89,12 @@ func doAction(rmsg *model.RequestMessage) bool {
 	//CLI: ip address ETHNAME A.B.C.D A.B.C.D
 	case "SET_ETHERNET_INTERFACE":
 		ip := strings.Split(KeyValue[0], "/")  // 172.16.1.254/24
-		_, ipnet, err := net.ParseCIDR(KeyValue[1])
+		_, ipnet, err := net.ParseCIDR(KeyValue[0])
 		if err != nil {
 			log.Fatalln("failed parsing CIDR address: ", err)
 			return false
 		} else {
-			scmd = fmt.Sprintf("ip address %s %s %s", KeyValue[0], ip[0], net.IP(ipnet.Mask))
+			scmd = fmt.Sprintf("ip address %s %s %s", KeyValue[1], ip[0], net.IP(ipnet.Mask))
 			ok_flag = runCommand(scmd)
 		}
 
