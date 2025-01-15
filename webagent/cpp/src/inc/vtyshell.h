@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace vtyshell {
-	enum vtyshcmd {
+	enum class VtyshCmd {
 		SET_HOST_NAME               = 100,
 		CHANGE_ADMIN_PASSWORD       = 101,
 		REBOOT_SYSTEM               = 102,

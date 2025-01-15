@@ -16,23 +16,23 @@
 #include "spdlog/spdlog.h"
 
 namespace vtyshell {
-	std::map<std::string, int> vtysh_cmd;
+	std::map<std::string, enum VtyshCmd> vtysh_cmd;
 
 	void initializeVtyshMap() {
-		vtysh_cmd["SET_HOST_NAME"]               = SET_HOST_NAME;
-		vtysh_cmd["CHANGE_ADMIN_PASSWORD"]       = CHANGE_ADMIN_PASSWORD;
-		vtysh_cmd["REBOOT_SYSTEM"]               = REBOOT_SYSTEM;
+		vtysh_cmd["SET_HOST_NAME"]               = VtyshCmd::SET_HOST_NAME;
+		vtysh_cmd["CHANGE_ADMIN_PASSWORD"]       = VtyshCmd::CHANGE_ADMIN_PASSWORD;
+		vtysh_cmd["REBOOT_SYSTEM"]               = VtyshCmd::REBOOT_SYSTEM;
 
-		vtysh_cmd["SET_ETHERNET_INTERFACE"]      = SET_ETHERNET_INTERFACE;
-		vtysh_cmd["NO_SET_ETHERNET_INTERFACE"]   = NO_SET_ETHERNET_INTERFACE;
-		vtysh_cmd["ADD_ROUTE_ENTRY"]             = ADD_ROUTE_ENTRY;
-		vtysh_cmd["REMOVE_ROUTE_ENTRY"]          = REMOVE_ROUTE_ENTRY;
+		vtysh_cmd["SET_ETHERNET_INTERFACE"]      = VtyshCmd::SET_ETHERNET_INTERFACE;
+		vtysh_cmd["NO_SET_ETHERNET_INTERFACE"]   = VtyshCmd::NO_SET_ETHERNET_INTERFACE;
+		vtysh_cmd["ADD_ROUTE_ENTRY"]             = VtyshCmd::ADD_ROUTE_ENTRY;
+		vtysh_cmd["REMOVE_ROUTE_ENTRY"]          = VtyshCmd::REMOVE_ROUTE_ENTRY;
 
-		vtysh_cmd["SET_WIREGUARD_INTERFACE"]     = SET_WIREGUARD_INTERFACE;
-		vtysh_cmd["NO_SET_WIREGUARD_INTERFACE"]  = NO_SET_WIREGUARD_INTERFACE;
-		vtysh_cmd["SET_WIREGUARD_GLOBAL_CONFIG"] = SET_WIREGUARD_GLOBAL_CONFIG;
-		vtysh_cmd["ADD_WIREGUARD_PEER"]          = ADD_WIREGUARD_PEER;
-		vtysh_cmd["REMOVE_WIREGUARD_PEER"]       = REMOVE_WIREGUARD_PEER;
+		vtysh_cmd["SET_WIREGUARD_INTERFACE"]     = VtyshCmd::SET_WIREGUARD_INTERFACE;
+		vtysh_cmd["NO_SET_WIREGUARD_INTERFACE"]  = VtyshCmd::NO_SET_WIREGUARD_INTERFACE;
+		vtysh_cmd["SET_WIREGUARD_GLOBAL_CONFIG"] = VtyshCmd::SET_WIREGUARD_GLOBAL_CONFIG;
+		vtysh_cmd["ADD_WIREGUARD_PEER"]          = VtyshCmd::ADD_WIREGUARD_PEER;
+		vtysh_cmd["REMOVE_WIREGUARD_PEER"]       = VtyshCmd::REMOVE_WIREGUARD_PEER;
 	}
 
 	std::vector<std::string> split(std::string s, std::string delimiter) {
@@ -105,19 +105,19 @@ namespace vtyshell {
 		char ipstr[16], netmaskstr[16];
 
 		switch (vtysh_cmd[subcmd[1]]) {
-			case SET_HOST_NAME:
+			case VtyshCmd::SET_HOST_NAME:
 				//CLI: hostname WORD
 				spdlog::debug(">>> SET_HOST_NAME !!!");
 				sprintf(scmd, "hostname %s", KeyValue[0].c_str());
 				break;
 
-			case REBOOT_SYSTEM:
+			case VtyshCmd::REBOOT_SYSTEM:
 				//CLI: reboot
 				spdlog::debug(">>> REBOOT_SYSTEM !!!");
 				sprintf(scmd, "reboot");
 				break;
 
-			case SET_ETHERNET_INTERFACE:
+			case VtyshCmd::SET_ETHERNET_INTERFACE:
 				//CLI: ip address ETHNAME A.B.C.D A.B.C.D
 				spdlog::debug(">>> SET_ETHERNET_INTERFACE !!!");
 				if (getIPNetmask(KeyValue[0], ipstr, netmaskstr)) {
@@ -127,13 +127,13 @@ namespace vtyshell {
 				}
 				break;
 
-			case NO_SET_ETHERNET_INTERFACE:
+			case VtyshCmd::NO_SET_ETHERNET_INTERFACE:
 				//CLI: no ip address ETHNAME
 				spdlog::debug(">>> NO_SET_ETHERNET_INTERFACE !!!");
 				sprintf(scmd, "no ip address %s", KeyValue[0].c_str());
 				break;
 
-			case ADD_ROUTE_ENTRY:
+			case VtyshCmd::ADD_ROUTE_ENTRY:
 				//CLI: ip route A.B.C.D A.B.C.D A.B.C.D ETHNAME
 				spdlog::debug(">>> ADD_ROUTE_ENTRY !!!");
 				sprintf(scmd, "ip route %s %s %s %s",
@@ -143,7 +143,7 @@ namespace vtyshell {
 						KeyValue[0].c_str());
 				break;
 
-			case REMOVE_ROUTE_ENTRY:
+			case VtyshCmd::REMOVE_ROUTE_ENTRY:
 				//CLI: no ip route A.B.C.D A.B.C.D
 				spdlog::debug(">>> REMOVE_ROUTE_ENTRY !!!");
 				sprintf(scmd, "no ip route %s %s",
@@ -151,7 +151,7 @@ namespace vtyshell {
 						KeyValue[2].c_str());
 				break;
 
-			case SET_WIREGUARD_INTERFACE:
+			case VtyshCmd::SET_WIREGUARD_INTERFACE:
 				//CLI: ip address ETHNAME A.B.C.D A.B.C.D
 				spdlog::debug(">>> SET_WIREGUARD_INTERFACE !!!");
 				if (getIPNetmask(KeyValue[0], ipstr, netmaskstr)) {
@@ -161,18 +161,18 @@ namespace vtyshell {
 				}
 				break;
 
-			case NO_SET_WIREGUARD_INTERFACE:
+			case VtyshCmd::NO_SET_WIREGUARD_INTERFACE:
 				//CLI: no ip address ETHNAME
 				spdlog::debug(">>> NO_SET_WIREGUARD_INTERFACE !!!");
 				sprintf(scmd, "no ip address wg0");
 				break;
 
-			case SET_WIREGUARD_GLOBAL_CONFIG:
+			case VtyshCmd::SET_WIREGUARD_GLOBAL_CONFIG:
 				//CLI: <NOT IMPLEMENTED>
 				spdlog::debug(">>> SET_WIREGUARD_GLOBAL_CONFIG !!!");
 				return true;
 
-			case ADD_WIREGUARD_PEER:
+			case VtyshCmd::ADD_WIREGUARD_PEER:
 				//CLI: wg peer PUBLICKEY allowed-ips WORD endpoint A.B.C.D:PORT persistent-keepalive NUM
 				spdlog::debug(">>> ADD_WIREGUARD_PEER !!!");
 				sprintf(scmd, "wg peer %s allowed-ips %s endpoint %s persistent-keepalive 25",
@@ -181,7 +181,7 @@ namespace vtyshell {
 						KeyValue[2].c_str());
 				break;
 
-			case REMOVE_WIREGUARD_PEER:
+			case VtyshCmd::REMOVE_WIREGUARD_PEER:
 				//CLI: no wg peer PUBLICKEY
 				spdlog::debug(">>> REMOVE_WIREGUARD_PEER !!!");
 				sprintf(scmd, "no wg peer %s", KeyValue[0].c_str());
