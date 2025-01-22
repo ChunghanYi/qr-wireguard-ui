@@ -9,7 +9,7 @@
 #
 # ///////////////////////////////////////////////////////////////////////////////
 
-VERSION=0.9.01
+VERSION=0.9.02
 CWD=$(pwd)
 OUTPUT=$CWD/output
 INST_PKG_PATH=$CWD/rootfs/qrwg
@@ -152,6 +152,75 @@ build_web_agent_CPP()
 }
 
 #
+# wireguard autoconnect client/server 
+# https://github.com/ChunghanYi/wireguard-auto
+#
+build_autoconnect()
+{
+	cd $CWD
+
+	WGAC_PATH=$CWD/wgac/wireguard-auto
+
+	if [ $1 = "release" ]; then
+		if [ ! -d ./wgac/wireguard-auto ]; then
+			mkdir -p wgac > /dev/null 2>&1
+			cd wgac
+			git clone https://github.com/ChunghanYi/wireguard-auto
+			cd wireguard-auto
+		else
+			cd $WGAC_PATH
+		fi
+
+		if [ ! -d ./external/spdlog ]; then
+			mkdir -p external > /dev/null 2>&1
+			cd external
+			git clone https://github.com/gabime/spdlog
+			cd spdlog
+			mkdir build && cd build
+
+			export CC=aarch64-openwrt-linux-musl-gcc
+			export CPP=aarch64-openwrt-linux-musl-g++
+			export AR=aarch64-openwrt-linux-musl-ar
+			export RANLIB=aarch64-openwrt-linux-musl-ranlib
+			cmake -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=arm64v8 \
+				-DCMAKE_CXX_COMPILER=$TOOLCHAIN_PATH/aarch64-openwrt-linux-musl-g++ \
+				..
+			make
+
+			if [ ! -d $WGAC_PATH/external/lib ]; then
+				mkdir $WGAC_PATH/external/lib > /dev/null 2>&1
+			fi
+			cp ./libspdlog.a ../../lib > /dev/null 2>&1
+			cd ..
+			cp -R ./include ../lib > /dev/null 2>&1
+			cd $WGAC_PATH
+		fi
+
+		export CC=aarch64-openwrt-linux-musl-gcc
+		export CPP=aarch64-openwrt-linux-musl-g++
+		export AR=aarch64-openwrt-linux-musl-ar
+		export RANLIB=aarch64-openwrt-linux-musl-ranlib
+		if [ ! -d ./build ]; then
+			mkdir -p build > /dev/null 2>&1
+		fi
+		cd build
+		cmake .. && make
+
+		cp ./wg_autoc $INST_PKG_PATH/usr/bin/qrwg
+		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/wg_autoc
+		cp ./wg_autod $INST_PKG_PATH/usr/bin/qrwg
+		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/wg_autod
+	elif [ $1 = "clean" ]; then
+		cd $WGAC_PATH
+		rm -rf ./build
+		cd ../..
+		rm -rf ./wgac
+	fi
+
+	cd $CWD
+}
+
+#
 # Wireguard shell
 #
 build_vtysh()
@@ -240,6 +309,7 @@ build_wireguard_package()
 		esac
 	done
 
+	build_autoconnect release
 	#build_qr_wireguard release
 
 	print_green ">>> done."
@@ -254,6 +324,7 @@ clean_wireguard_package()
 	build_wireguard_ui clean
 	build_web_agent_Go clean
 	build_web_agent_CPP clean
+	build_autoconnect clean
 	#build_qr_wireguard clean
 
 	print_green ">>> done."
