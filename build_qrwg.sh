@@ -208,8 +208,10 @@ build_autoconnect()
 
 		cp ./wg_autoc $INST_PKG_PATH/usr/bin/qrwg
 		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/wg_autoc
+		cp ../config/client.conf $INST_PKG_PATH/qrwg/config
 		cp ./wg_autod $INST_PKG_PATH/usr/bin/qrwg
 		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/wg_autod
+		cp ../config/server.conf $INST_PKG_PATH/qrwg/config
 	elif [ $1 = "clean" ]; then
 		cd $WGAC_PATH
 		rm -rf ./build

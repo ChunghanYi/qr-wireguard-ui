@@ -13,7 +13,7 @@
 #
 
 VERSION=0.09.00
-BOARDTYPE="NanoPi"
+BOARDTYPE="SGW"
 QRWG_SERVICE_FILE=/etc/init.d/qrwg
 
 print_greetings()
@@ -24,8 +24,8 @@ print_greetings()
 upgrade_system()
 {
 	echo
-	#opkg update
-	#opkg install xxx
+	opkg update
+	opkg install wireguard-tools
 }
 
 update_system_config()
@@ -36,7 +36,7 @@ update_system_config()
 	fi
 
 	# Change hostname
-	uci set system.@system[0].hostname='nanopi' > /dev/null 2>&1
+	uci set system.@system[0].hostname='sgw' > /dev/null 2>&1
 	uci set system.@system[0].zonename='Asia/Seoul' > /dev/null 2>&1
 	uci set system.@system[0].timezone='KST-9' > /dev/null 2>&1
 	uci commit system > /dev/null 2>&1

@@ -9,7 +9,7 @@ export PATH=/usr/bin/qrwg:$PATH
 ip link add dev wg0 type wireguard
 
 #wg key generation w/ wg tool
-if [ ! -r /config/publickey ]; then
+if [ ! -r /qrwg/config/publickey ]; then
 	/usr/bin/qrwg/vtysh -e "wg regenerate-key"
 fi
 
@@ -27,3 +27,8 @@ else
 fi
 /usr/bin/qrwg/wireguard-ui -base-path /qrwg &
 sleep 2
+
+#Run the wireguard autoconnect client or server 
+#/usr/bin/qrwg/wg_autod -f /qrwg/config/server.conf &
+#/usr/bin/qrwg/wg_autoc -f <server-ip-address> /qrwg/config/client.conf &
+sleep 1

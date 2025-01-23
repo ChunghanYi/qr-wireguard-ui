@@ -13,7 +13,7 @@
 #
 
 VERSION=0.09.00
-BOARDTYPE="NanoPi"
+BOARDTYPE="SGW"
 QRWG_SERVICE_FILE=/etc/init.d/qrwg
 
 echo "Uninstalling the quantum-resistant wireguard package for $BOARDTYPE..."
@@ -34,8 +34,8 @@ print_reboot_message()
 upgrade_system()
 {
 	echo
-#    opkg update
-#    opkg remove xxxx
+	#opkg update
+	#opkg remove wireguard-tools
 }
 
 #
@@ -54,11 +54,13 @@ remove_pkg()
 
 		cp /usr/bin/qrwg/wireguard_orig.ko /lib/modules/6.1.63/wireguard.ko > /dev/null 2>&1
 
-		rm -rf /config > /dev/null 2>&1
+		rm -rf /qrwg > /dev/null 2>&1
 		rm /etc/init.d/qrwg > /dev/null 2>&1
 		rm /root/.profile > /dev/null 2>&1
 		rm -rf /usr/bin/qrwg > /dev/null 2>&1
 		rm -rf /usr/local/lib > /dev/null 2>&1
+		rm -rf /db > /dev/null 2>&1
+		rm -rf /root/db > /dev/null 2>&1
 
 		uci commit firewall > /dev/null 2>&1
 
