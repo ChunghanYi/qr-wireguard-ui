@@ -25,7 +25,7 @@ if [ ! -r /etc/wireguard/wg0.conf ]; then
 else
 	echo > /etc/wireguard/wg0.conf
 fi
-/usr/bin/qrwg/wireguard-ui -base-path /qrwg &
+/usr/bin/qrwg/wireguard-ui &
 sleep 2
 
 #Run the wireguard autoconnect client or server 
