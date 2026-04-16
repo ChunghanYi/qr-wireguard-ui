@@ -81,9 +81,13 @@ nanopi(config)# ?
   write       Write running configuration to memory, network, or terminal
 nanopi(config)# 
 
-Good luck~
-Slowboot
 ```
+
+## How to install on NanoPi
+```
+http://192.168.2.1:5000
+```
+![wireguard-ui login page](images/wireguard-ui_login_page.png)
 
 ## My blog posting for this project
   For more information, please read the blog posting below.<br>
