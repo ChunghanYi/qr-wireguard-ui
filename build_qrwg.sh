@@ -163,6 +163,12 @@ build_autoconnect()
 	WGAC_PATH=$CWD/wgac/wireguard-auto
 
 	if [ $1 = "release" ]; then
+		if [ ! -d $WGAC_PATH ]; then
+			mkdir -p wgac > /dev/null 2>&1
+			cd wgac
+			git clone https://github.com/ChunghanYi/wireguard-auto
+		fi
+
 		cd $WGAC_PATH
 		while true; do
 			read -p ">>> Do you want to edit build script for wireguard-auto project ?(y/n)" edit
@@ -183,8 +189,10 @@ build_autoconnect()
 		cp ./config/server.conf $INST_PKG_PATH/qrwg/config
 
 	elif [ $1 = "clean" ]; then
-		cd $WGAC_PATH
-		./build_arm64.sh clean
+		if [ -d $WGAC_PATH ]; then
+			cd $WGAC_PATH
+			./build_arm64.sh clean
+		fi
 	fi
 
 	cd $CWD
