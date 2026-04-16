@@ -89,7 +89,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{.basePath}}" class="brand-link">
-                <span class="brand-text">&nbsp; WIREGUARD UI</span>
+                <span class="brand-text">&nbsp; Security Gateway</span>
             </a>
 
             <!-- Sidebar -->
@@ -117,12 +117,24 @@
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <li class="nav-header">MAIN</li>
+                        <li class="nav-header">&nbsp;&nbsp;&nbsp;DASHBOARD</li>
                         <li class="nav-item">
-                            <a href="{{.basePath}}/" class="nav-link {{if eq .baseData.Active ""}}active{{end}}">
-                                <i class="nav-icon fas fa-user-secret"></i>
+                            <!-- <a href="{{.basePath}}/dashboard" class="nav-link {{if eq .baseData.Active "dashboard" }}active{{end}}"> -->
+                            <a href="{{.basePath}}/" class="nav-link {{if eq .baseData.Active "" }}active{{end}}">
+                            <i class="nav-icon fas  fa-solid fa-tachometer-alt"></i>
+                            <p>
+                                DashBoard
+                            </p>
+                            </a>
+                        </li>
+                        <li class="nav-header">WIREGUARD</li>
+                        <li class="nav-item">
+                            <!-- <a href="{{.basePath}}/" class="nav-link {{if eq .baseData.Active ""}}active{{end}}"> -->
+                            <a href="{{.basePath}}/wg-clients" class="nav-link {{if eq .baseData.Active "wg-clients"}}active{{end}}">
+                                <!-- <i class="nav-icon fas fa-user-secret"></i> -->
+                                <i class="nav-icon fas fa-user-plus"></i>
                                 <p>
-                                    Wireguard Clients
+                                    Clients
                                 </p>
                             </a>
                         </li>
@@ -132,16 +144,26 @@
                             <a href="{{.basePath}}/wg-server" class="nav-link {{if eq .baseData.Active "wg-server" }}active{{end}}">
                                 <i class="nav-icon fas fa-server"></i>
                                 <p>
-                                    Wireguard Server
+                                    Server
                                 </p>
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{{.basePath}}/status" class="nav-link {{if eq .baseData.Active "status" }}active{{end}}">
+                                <!-- <i class="nav-icon fas fa-signal"></i> -->
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>
+                                    Connected Peers 
+                                </p>
+                            </a>
+                        </li>
 
                         <li class="nav-header">SETTINGS</li>
                         <li class="nav-item">
                             <a href="{{.basePath}}/global-settings" class="nav-link {{if eq .baseData.Active "global-settings" }}active{{end}}">
-                                <i class="nav-icon fas fa-cog"></i>
+                                <!-- <i class="nav-icon fas fa-cog"></i> -->
+                                <i class="nav-icon fas fa-dragon"></i>
                                 <p>
                                     Global Settings
                                 </p>
@@ -161,14 +183,6 @@
 
                         <li class="nav-header">UTILITIES</li>
                         <li class="nav-item">
-                            <a href="{{.basePath}}/status" class="nav-link {{if eq .baseData.Active "status" }}active{{end}}">
-                                <i class="nav-icon fas fa-signal"></i>
-                                <p>
-                                    Status
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="{{.basePath}}/wake_on_lan_hosts" class="nav-link {{if eq .baseData.Active "wake_on_lan_hosts" }}active{{end}}">
                                 <i class="nav-icon fas  fa-solid fa-power-off"></i>
                                 <p>
@@ -179,7 +193,8 @@
                         <li class="nav-header">ABOUT</li>
                         <li class="nav-item">
                             <a href="{{.basePath}}/about" class="nav-link {{if eq .baseData.Active "about" }}active{{end}}">
-                            <i class="nav-icon fas  fa-solid fa-id-card"></i>
+                            <!-- <i class="nav-icon fas  fa-solid fa-id-card"></i> -->
+                            <i class="nav-icon fas  fa-solid fa-info"></i>
                             <p>
                                 About
                             </p>

@@ -362,7 +362,10 @@ func WireGuardClients(db store.IStore) echo.HandlerFunc {
 		}
 
 		return c.Render(http.StatusOK, "clients.html", map[string]interface{}{
-			"baseData":       model.BaseData{Active: "", CurrentUser: currentUser(c), Admin: isAdmin(c)},
+			//security gateway extension --
+			//"baseData":       model.BaseData{Active: "", CurrentUser: currentUser(c), Admin: isAdmin(c)},
+			"baseData":       model.BaseData{Active: "wg-clients", CurrentUser: currentUser(c), Admin: isAdmin(c)},
+			//-- security gateway extension
 			"clientDataList": clientDataList,
 		})
 	}
@@ -1309,6 +1312,17 @@ func GetHashesChanges(db store.IStore) echo.HandlerFunc {
 		}
 	}
 }
+
+//security gateway extension --
+// DashBoardPage handler
+func DashBoardPage() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.Render(http.StatusOK, "dashboard.html", map[string]interface{}{
+			"baseData": model.BaseData{Active: "", CurrentUser: currentUser(c), Admin: isAdmin(c)},
+		})
+	}
+}
+//-- security gateway extension
 
 // AboutPage handler
 func AboutPage() echo.HandlerFunc {

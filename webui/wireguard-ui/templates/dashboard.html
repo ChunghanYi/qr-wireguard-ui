@@ -1,0 +1,159 @@
+{{ define "title"}}
+DashBoard
+{{ end }}
+
+{{ define "top_css"}}
+{{ end }}
+
+{{ define "username"}}
+{{ .username }}
+{{ end }}
+
+{{ define "page_title"}}
+DashBoard
+{{ end }}
+
+{{ define "page_content"}}
+<section class="content">
+	<div style="width: 800px;"><canvas id="myChart"></canvas></div>
+	<hr>
+	<!-- <div style="width: 800px;"><canvas id="myChart2"></canvas></div> -->
+	<hr>
+</section>
+{{ end }}
+
+{{ define "bottom_js"}}
+<script src="{{.basePath}}/static/dist/js/chart.umd.min.js"></script>
+<script>
+	const ctx = document.getElementById('myChart');
+
+	const myChart = new Chart(ctx, {
+		type: 'doughnut',
+		data: {
+			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+			//labels: [],
+			datasets: [{
+				label: '# of Votes',
+				data: [12, 19, 3, 5, 2, 3],
+				//data: [],
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+	});
+
+/*
+    // Using Fetch API
+    fetch('your-data-endpoint.php')
+        .then(response => response.json())
+        .then(data => {
+            // Process and update chart with new data
+        })
+        .catch(error => console.error('Error fetching data:', error));
+*/
+
+	// Using jQuery AJAX
+	$.ajax({
+		cache: false,
+		method: 'GET',
+		url: '{{.basePath}}/status',	//TBD
+		dataType: 'json',
+		success: function(data) {
+			// TBD - Process and update chart with new data
+/*
+			myChart.data.labels = data.labels;
+			myChart.data.datasets[0].data = data.values;
+*/
+			myChart.data.labels[0] = 'Red';
+			myChart.data.labels[1] = 'Blue';
+			myChart.data.labels[2] = 'Yellow';
+			myChart.data.labels[3] = 'Green';
+			myChart.data.labels[4] = 'Purple';
+			myChart.data.labels[5] = 'Orange';
+
+			myChart.data.datasets[0].data[0] = 12;
+			myChart.data.datasets[0].data[1] = 19;
+			myChart.data.datasets[0].data[2] = 3;
+			myChart.data.datasets[0].data[3] = 5;
+			myChart.data.datasets[0].data[4] = 2;
+			myChart.data.datasets[0].data[5] = 3;
+
+			myChart.update();
+		},
+		error: function(xhr, status, error) {
+			console.error('AJAX error:', error);
+
+			myChart.data.labels[0] = 'Red';
+			myChart.data.labels[1] = 'Blue';
+			myChart.data.labels[2] = 'Yellow';
+			myChart.data.labels[3] = 'Green';
+			myChart.data.labels[4] = 'Purple';
+			myChart.data.labels[5] = 'Orange';
+
+/*
+			myChart.data.datasets[0].data[0] = 1;
+			myChart.data.datasets[0].data[1] = 5;
+			myChart.data.datasets[0].data[2] = 10;
+			myChart.data.datasets[0].data[3] = 15;
+			myChart.data.datasets[0].data[4] = 20;
+			myChart.data.datasets[0].data[5] = 25;
+*/
+			myChart.data.datasets[0].data[0] = 12;
+			myChart.data.datasets[0].data[1] = 19;
+			myChart.data.datasets[0].data[2] = 3;
+			myChart.data.datasets[0].data[3] = 5;
+			myChart.data.datasets[0].data[4] = 2;
+			myChart.data.datasets[0].data[5] = 3;
+
+			//myChart.update();
+		}
+    });
+
+/*
+                    $.ajax({
+                        cache: false,
+                        method: 'GET',
+                        url: '{{.basePath}}/status',
+                        success: function (data) {
+                            const returnedHTML = $(data).find(".table-success").get();
+                            var returnedString = "";
+                            returnedHTML.forEach(entry => returnedString += entry.outerHTML);
+                            $(".fa-key").each(function () {
+                                if (returnedString.indexOf($(this).parent().text().trim()) != -1) {
+                                    $(this).closest('.col-lg-4').show();
+                                }
+                            })
+                        }
+                    });
+*/
+
+/*
+	const ctx2 = document.getElementById('myChart2');
+
+	new Chart(ctx2, {
+		type: 'line',
+		data: {
+			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+			datasets: [{
+				label: '# of Votes',
+				data: [12, 19, 3, 5, 2, 3],
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+	});
+*/
+</script>
+{{ end }}

@@ -98,6 +98,8 @@ root@nanopi:~# ps w | grep "/usr/bin/qrwg"
 http://192.168.2.1:5000
 ```
 <img src="./images/wireguard-ui_login_page.png" width="50%">
+<br>
+<img src="./images/wireguard-ui_server_setting_page.png" width="50%">
 
 ## My blog posting for this project
   For more information, please read the blog posting below.<br>
