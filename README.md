@@ -87,7 +87,7 @@ nanopi(config)#
 ```
 http://192.168.2.1:5000
 ```
-![wireguard-ui login page](images/wireguard-ui_login_page.png){: width="50%" height="auto"}
+<img src="https://github.com/ChunghanYi/qr-wireguard-ui/tree/main/images/wireguard-ui_login_page.png" width="50%" height="auto"/>
 
 ## My blog posting for this project
   For more information, please read the blog posting below.<br>
