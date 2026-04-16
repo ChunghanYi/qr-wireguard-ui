@@ -35,7 +35,7 @@ $ ls -l
 
 ```
 
-## How to install on NanoPi
+## How to install on NanoPi(mini gateway)
 ```
 <Ubuntu 22.04 LTS or higher>
 $ scp ./qr_wireguard_0.9.03.tar.gz root@192.168.2.1:~/workspace
@@ -47,7 +47,10 @@ $ ssh root@192.168.2.1
 # cd qr_install
 # ./Install.sh
   -> the nanopi will be rebooted
+```
 
+## How to connect to NanoPi(mini gateway) with ssh
+```
 <Ubuntu 22.04 LTS>
 $ ssh root@192.168.2.1
 nanopi login: root
@@ -83,7 +86,14 @@ nanopi(config)#
 
 ```
 
-## How to connect to wireguard webui 
+## How to check qrwg processes 
+```
+nanopi(config)# end shell
+root@nanopi:~# ps w | grep "/usr/bin/qrwg" 
+```
+<img src="./images/qrwg_processes.png" width="50%">
+
+## How to connect to NanoPi(mini gateway) with web browser
 ```
 http://192.168.2.1:5000
 ```
