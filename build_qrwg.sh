@@ -4,12 +4,12 @@
 # This script creates a quantum-resistant wireguard package for nanopi openwrt.
 # (This shell script has been tested in the Ubuntu 22.04 LTS environment)
 #
-# Copyright (c) 2024-2025 Chunghan Yi <chunghan.yi@gmail.com>
+# Copyright (c) 2024-2026 Chunghan Yi <chunghan.yi@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 #
 # ///////////////////////////////////////////////////////////////////////////////
 
-VERSION=0.9.02
+VERSION=0.9.03
 CWD=$(pwd)
 OUTPUT=$CWD/output
 INST_PKG_PATH=$CWD/rootfs/qrwg
@@ -162,61 +162,28 @@ build_autoconnect()
 	WGAC_PATH=$CWD/wgac/wireguard-auto
 
 	if [ $1 = "release" ]; then
-		if [ ! -d ./wgac/wireguard-auto ]; then
-			mkdir -p wgac > /dev/null 2>&1
-			cd wgac
-			git clone https://github.com/ChunghanYi/wireguard-auto
-			cd wireguard-auto
-		else
-			cd $WGAC_PATH
-		fi
+		cd $WGAC_PATH
+		while true; do
+			read -p ">>> Do you want to edit build script for wireguard-auto project ?(y/n)" edit
+			case $edit in
+				[Yy]* ) vi ./build_arm64.sh; break;;
+				[Nn]* ) break;;
+				* ) print_red "Please answer yes or no.";;
+			esac
+		done
 
-		if [ ! -d ./external/spdlog ]; then
-			mkdir -p external > /dev/null 2>&1
-			cd external
-			git clone https://github.com/gabime/spdlog
-			cd spdlog
-			mkdir build && cd build
+		./build_arm64.sh release
 
-			export CC=aarch64-openwrt-linux-musl-gcc
-			export CPP=aarch64-openwrt-linux-musl-g++
-			export AR=aarch64-openwrt-linux-musl-ar
-			export RANLIB=aarch64-openwrt-linux-musl-ranlib
-			cmake -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=arm64v8 \
-				-DCMAKE_CXX_COMPILER=$TOOLCHAIN_PATH/aarch64-openwrt-linux-musl-g++ \
-				..
-			make
-
-			if [ ! -d $WGAC_PATH/external/lib ]; then
-				mkdir $WGAC_PATH/external/lib > /dev/null 2>&1
-			fi
-			cp ./libspdlog.a ../../lib > /dev/null 2>&1
-			cd ..
-			cp -R ./include ../lib > /dev/null 2>&1
-			cd $WGAC_PATH
-		fi
-
-		export CC=aarch64-openwrt-linux-musl-gcc
-		export CPP=aarch64-openwrt-linux-musl-g++
-		export AR=aarch64-openwrt-linux-musl-ar
-		export RANLIB=aarch64-openwrt-linux-musl-ranlib
-		if [ ! -d ./build ]; then
-			mkdir -p build > /dev/null 2>&1
-		fi
-		cd build
-		cmake .. && make
-
-		cp ./wg_autoc $INST_PKG_PATH/usr/bin/qrwg
+		cp ./build/wg_autoc $INST_PKG_PATH/usr/bin/qrwg
 		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/wg_autoc
-		cp ../config/client.conf $INST_PKG_PATH/qrwg/config
-		cp ./wg_autod $INST_PKG_PATH/usr/bin/qrwg
+		cp ./config/client.conf $INST_PKG_PATH/qrwg/config
+		cp ./build/wg_autod $INST_PKG_PATH/usr/bin/qrwg
 		chmod 755 $INST_PKG_PATH/usr/bin/qrwg/wg_autod
-		cp ../config/server.conf $INST_PKG_PATH/qrwg/config
+		cp ./config/server.conf $INST_PKG_PATH/qrwg/config
+
 	elif [ $1 = "clean" ]; then
 		cd $WGAC_PATH
-		rm -rf ./build
-		cd ../..
-		rm -rf ./wgac
+		./build_arm64.sh clean
 	fi
 
 	cd $CWD

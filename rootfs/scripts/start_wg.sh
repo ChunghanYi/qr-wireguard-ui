@@ -29,6 +29,6 @@ fi
 sleep 2
 
 #Run the wireguard autoconnect client or server 
-#/usr/bin/qrwg/wg_autod -f /qrwg/config/server.conf &
-#/usr/bin/qrwg/wg_autoc -f <server-ip-address> /qrwg/config/client.conf &
+#/usr/bin/qrwg/wg_autod --daemon --config /qrwg/config/server.conf
+#/usr/bin/qrwg/wg_autoc --daemon --server <server-ip> --config /qrwg/config/client.conf
 sleep 1

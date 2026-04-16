@@ -1,8 +1,20 @@
 # qr-wireguard-ui
 <span style="color:#d3d3d3">Quantum Resistant WireGuard UI for NanoPi</span>
 ```
-wireguard-ui(open source project) + webUI backend + quantum resistant wireguard kernel on NanoPi
-It's currently in development. 😎
+Key Components and Deliverables for qr-wireguard-ui package
+============================================================
+ 1) wireguard-ui(open source project)
+  -> https://github.com/ngoduykhanh/wireguard-ui
+ 2) webUI backend(Go & cpp versions)
+ 3) vtysh CLI 
+ 4) wireguard autoconnect
+  -> https://github.com/ChunghanYi/wireguard-auto
+ 5) quantum resistant wireguard kernel on NanoPi
+  -> https://github.com/ChunghanYi/qr-l2-wireguard
+ 6) installation tarball
+  -> qr_wireguard_0.9.03.tar.gz
+
+It's currently in development(v0.9.3). 😎
 
 ```
 
@@ -19,19 +31,19 @@ $ ./build_qrwg.sh release
 
 $ cd output
 $ ls -l
--rw-rw-r-- 1 chyi chyi 14936118  1월  2 16:15 qr_wireguard_0.9.00.tar.gz
+-rw-rw-r-- 1 chyi chyi 14092329  4월 16 12:27 qr_wireguard_0.9.03.tar.gz
 
 ```
 
 ## How to install on NanoPi
 ```
-<Ubuntu 22.04 LTS>
-$ scp ./qr_wireguard_0.9.00.tar.gz root@192.168.2.1:~/workspace
+<Ubuntu 22.04 LTS or higher>
+$ scp ./qr_wireguard_0.9.03.tar.gz root@192.168.2.1:~/workspace
 $ ssh root@192.168.2.1
 
 <NanoPi R2S Plus/FriendlyWrt 23.05.3>
 # cd /root/workspace
-# tar xvzf qr_wireguard_0.9.00.tar.gz
+# tar xvzf qr_wireguard_0.9.03.tar.gz
 # cd qr_install
 # ./Install.sh
   -> the nanopi will be rebooted
@@ -87,8 +99,7 @@ Slowboot
 ```
   <br>
 
-  __<1> wireguard-ui project is created by ngoduykhanh Khanh Ngo.__
+  __(1) wireguard-ui project is created by ngoduykhanh Khanh Ngo.__
   <br>
-  <br>
-  __<2> WireGuard is a registered trademark of Jason A. Donenfeld.__
+  __(2) WireGuard is a registered trademark of Jason A. Donenfeld.__
 
