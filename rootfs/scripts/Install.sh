@@ -3,7 +3,7 @@
 #
 # Installation Shell Script for Quantum-Resistant Wireguard
 #
-# Copyright (c) 2024 Chunghan Yi <chunghan.yi@gmail.com>
+# Copyright (c) 2024-2026 Chunghan Yi <chunghan.yi@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -12,7 +12,7 @@
 # ./Install.sh
 #
 
-VERSION=0.09.00
+VERSION=0.09.03
 BOARDTYPE="SGW"
 QRWG_SERVICE_FILE=/etc/init.d/qrwg
 

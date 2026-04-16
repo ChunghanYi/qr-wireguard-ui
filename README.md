@@ -1,8 +1,8 @@
 # qr-wireguard-ui
-<span style="color:#d3d3d3">Quantum Resistant WireGuard UI for NanoPi</span>
+<span style="color:#d3d3d3">Quantum Resistant WireGuard Package for NanoPi mini Gateway</span>
 ```
-Key Components and Deliverables for qr-wireguard-ui package
-============================================================
+Key Components and Deliverables
+================================
  1) wireguard-ui(open source project)
   -> https://github.com/ngoduykhanh/wireguard-ui
  2) webUI backend(Go & cpp versions)
@@ -89,6 +89,7 @@ Slowboot
   For more information, please read the blog posting below.<br>
   https://slowbootkernelhacks.blogspot.com/2025/01/quantum-resistant-wireguard-from-ui-to.html
   <br>
+  <br>
 
 ## Reference codes
 ```
@@ -99,7 +100,8 @@ Slowboot
 ```
   <br>
 
-  __(1) wireguard-ui project is created by ngoduykhanh Khanh Ngo.__
+## License
+  a) wireguard-ui project is created by ngoduykhanh Khanh Ngo.
   <br>
-  __(2) WireGuard is a registered trademark of Jason A. Donenfeld.__
+  b) WireGuard is a registered trademark of Jason A. Donenfeld.
 
