@@ -57,8 +57,9 @@ build_wireguard_ui()
 	cd webui/wireguard-ui
 	if [ $1 = "release" ]; then
 		if [ ! -d ./node_modules ]; then
-			npm install chart.js
 			./prepare_assets.sh
+			npm install chart.js
+			cp ./node_modules/chart.js/dist/chart.umd.min.js ./assets/dist/js
 			go get github.com/ChunghanYi/qr-wireguard-ui/webui/beplugin
 		fi
 		GOOS=linux GOARCH=arm64 go build -o wireguard-ui	
@@ -275,8 +276,8 @@ build_wireguard_package()
 	print_green ">>> Building a quantum-resistant wireguard package for nanopi...     "
 	print_green "+-------------------------------------------------------------------+"
 
-	build_vtysh release
 	build_wireguard_ui release
+	build_vtysh release
 
 	while true; do
 		read -p ">>> Do you want to build web-agentd based on Go?(y/n)" go
@@ -298,8 +299,8 @@ clean_wireguard_package()
 	echo
 	print_green ">>> Cleaning ..."
 
-	build_vtysh clean
 	build_wireguard_ui clean
+	build_vtysh clean
 	build_web_agent_Go clean
 	build_web_agent_CPP clean
 	build_autoconnect clean

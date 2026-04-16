@@ -15,7 +15,7 @@ mkdir -p "${DIR}/assets/dist/js" "${DIR}/assets/dist/css" && \
 
 #security gateway extension --
 # Copy chart.js dist
-cp "${DIR}/node_modules/chart.js/dist/chart.umd.min.js" "${DIR}/assets/dist/js"
+#cp "${DIR}/node_modules/chart.js/dist/chart.umd.min.js" "${DIR}/assets/dist/js"
 #-- security gateway extension
 
 # Copy helper js
