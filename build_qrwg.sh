@@ -57,6 +57,7 @@ build_wireguard_ui()
 	cd webui/wireguard-ui
 	if [ $1 = "release" ]; then
 		if [ ! -d ./node_modules ]; then
+			npm install chart.js
 			./prepare_assets.sh
 			go get github.com/ChunghanYi/qr-wireguard-ui/webui/beplugin
 		fi
