@@ -17,7 +17,6 @@ DashBoard
 <section class="content">
 	<div style="width: 800px;"><canvas id="myChart"></canvas></div>
 	<hr>
-	<!-- <div style="width: 800px;"><canvas id="myChart2"></canvas></div> -->
 	<hr>
 </section>
 {{ end }}
@@ -96,14 +95,6 @@ DashBoard
 			myChart.data.labels[4] = 'Purple';
 			myChart.data.labels[5] = 'Orange';
 
-/*
-			myChart.data.datasets[0].data[0] = 1;
-			myChart.data.datasets[0].data[1] = 5;
-			myChart.data.datasets[0].data[2] = 10;
-			myChart.data.datasets[0].data[3] = 15;
-			myChart.data.datasets[0].data[4] = 20;
-			myChart.data.datasets[0].data[5] = 25;
-*/
 			myChart.data.datasets[0].data[0] = 12;
 			myChart.data.datasets[0].data[1] = 19;
 			myChart.data.datasets[0].data[2] = 3;
@@ -114,46 +105,5 @@ DashBoard
 			//myChart.update();
 		}
     });
-
-/*
-                    $.ajax({
-                        cache: false,
-                        method: 'GET',
-                        url: '{{.basePath}}/status',
-                        success: function (data) {
-                            const returnedHTML = $(data).find(".table-success").get();
-                            var returnedString = "";
-                            returnedHTML.forEach(entry => returnedString += entry.outerHTML);
-                            $(".fa-key").each(function () {
-                                if (returnedString.indexOf($(this).parent().text().trim()) != -1) {
-                                    $(this).closest('.col-lg-4').show();
-                                }
-                            })
-                        }
-                    });
-*/
-
-/*
-	const ctx2 = document.getElementById('myChart2');
-
-	new Chart(ctx2, {
-		type: 'line',
-		data: {
-			labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-			datasets: [{
-				label: '# of Votes',
-				data: [12, 19, 3, 5, 2, 3],
-				borderWidth: 1
-			}]
-		},
-		options: {
-			scales: {
-				y: {
-					beginAtZero: true
-				}
-			}
-		}
-	});
-*/
 </script>
 {{ end }}
