@@ -83,11 +83,11 @@ nanopi(config)#
 
 ```
 
-## How to install on NanoPi
+## How to connect to wireguard webui 
 ```
 http://192.168.2.1:5000
 ```
-![wireguard-ui login page](images/wireguard-ui_login_page.png)
+![wireguard-ui login page](images/wireguard-ui_login_page.png){: width="50%" height="auto"}
 
 ## My blog posting for this project
   For more information, please read the blog posting below.<br>
